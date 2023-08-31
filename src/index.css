@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+
+* html {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "poppins";
+  src: url("./font/Poppins-Regular.ttf");
+}
+
+@font-face {
+  font-family: "marko";
+  src: url("./font/MarkoOne-Regular.ttf");
+}
+
+@font-face {
+  font-family: "risque";
+  src: url("./font/Risque-Regular.ttf");
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
