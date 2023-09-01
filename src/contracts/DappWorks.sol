@@ -22,7 +22,8 @@ contract DappWork is Ownable, ReentrancyGuard {
         uint price;
         uint numOfFreelancers;
         uint numFreelancersAccepted;
-        uint deadline;
+        uint startTime;
+        uint duration;
         bool approved;
         bool paidOut;
         bool listed;
@@ -52,14 +53,14 @@ contract DappWork is Ownable, ReentrancyGuard {
         string memory tags,
         uint price,
         uint numOfFreelancers,
-        uint deadline
+        uint duration
     ) public payable {
         require(bytes(jobTitle).length > 0, "Please provide a job title");
         require(bytes(description).length > 0, "Please provide a description");
         require(bytes(tags).length > 0, "Please provide tags");
         require(numOfFreelancers > 0, "Minimum of one freelancers required");
         require(price > 0 ether, "Please indicate the price");
-        require(deadline > 0, "Provide a valid timestamp");
+        require(duration > 0, "Provide a valid timestamp");
 
         totalBalance += price;
         totalJobListings.increment();
@@ -73,7 +74,7 @@ contract DappWork is Ownable, ReentrancyGuard {
         jobListings[id].tags = tags;
         jobListings[id].price = price;
         jobListings[id].numOfFreelancers = numOfFreelancers;
-        jobListings[id].deadline = deadline;
+        jobListings[id].duration = duration;
         jobListings[id].listed = true;
 
         jobListingExists[id] = true;
@@ -113,6 +114,10 @@ contract DappWork is Ownable, ReentrancyGuard {
         freelancers[jId][id].freelancer = bidder;
 
         jobListings[jId].numFreelancersAccepted++;
+    }
+
+    function startProjectTimer(uint id) public {
+
     }
 
     function getJobs() public view returns (JobStruct[] memory ActiveGames) {
