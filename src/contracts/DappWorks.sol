@@ -55,9 +55,7 @@ contract DappWork is Ownable, ReentrancyGuard {
         require(bytes(jobTitle).length > 0, "Please provide a job title");
         require(bytes(description).length > 0, "Please provide a description");
         require(bytes(tags).length > 0, "Please provide tags");
-        require(numOfFreelancers > 0, "Minimum of one freelancers required");
         require(price > 0 ether, "Please indicate the price");
-        require(duration > 0, "Provide a valid timestamp");
 
         totalBalance += price;
         totalJobListings.increment();
