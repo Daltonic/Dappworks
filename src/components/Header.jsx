@@ -8,6 +8,8 @@ const Header = () => {
       <main className="w-[96%] mx-auto p-1 flex justify-between items-center flex-wrap">
         <Link className='text-green-600 font-[risque] text-2xl' to={'/'}>Dappworks</Link>
         <div className='flex items-center space-x-5'>
+          <span className='text-gray-600'>My jobs</span>
+          <span className='text-gray-600'>My Projects</span>
           <button 
             className='bg-green-600 text-white py-1 px-5 rounded-full'
           >

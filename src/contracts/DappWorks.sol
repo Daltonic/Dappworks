@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract DappWork is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
@@ -20,19 +21,17 @@ contract DappWork is Ownable, ReentrancyGuard {
         string description;
         string tags;
         uint price;
-        uint numOfFreelancers;
-        uint numFreelancersAccepted;
-        uint startTime;
-        uint duration;
-        bool approved;
+        bool completed;
         bool paidOut;
         bool listed;
+        bool timestamp;
     }
 
     struct FreelancerStruct {
         uint id;
         uint jId;
         address freelancer;
+        bool accepted;
     }
 
     struct BidStruct {
@@ -52,8 +51,6 @@ contract DappWork is Ownable, ReentrancyGuard {
         string memory description,
         string memory tags,
         uint price,
-        uint numOfFreelancers,
-        uint duration
     ) public payable {
         require(bytes(jobTitle).length > 0, "Please provide a job title");
         require(bytes(description).length > 0, "Please provide a description");
@@ -73,16 +70,15 @@ contract DappWork is Ownable, ReentrancyGuard {
         jobListings[id].description = description;
         jobListings[id].tags = tags;
         jobListings[id].price = price;
-        jobListings[id].numOfFreelancers = numOfFreelancers;
-        jobListings[id].duration = duration;
         jobListings[id].listed = true;
+        jobListings[id].timestamp = currentTime();
 
         jobListingExists[id] = true;
     }
 
     function unListJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
-        require(!jobListings[id].approved, "This job has been approved");
+        require(!jobListings[id].completed, "This job has been completed");
         require(!jobListings[id].paidOut, "This job has been paid out");
 
         jobListings[id].listed = false;
@@ -91,7 +87,7 @@ contract DappWork is Ownable, ReentrancyGuard {
 
     function bidForJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
-        require(!jobListings[id].approved, "This job has been approved");
+        require(!jobListings[id].completed, "This job has been completed");
         require(!jobListings[id].paidOut, "This job has been paid out");
 
         BidStruct memory bid;
@@ -103,38 +99,37 @@ contract DappWork is Ownable, ReentrancyGuard {
 
     function acceptBid(uint jId, address bidder) public {
         require(jobListingExists[jId], "This job listing doesn't exist");
-        require(!jobListings[jId].approved, "This job has been approved");
+        require(!jobListings[jId].completed, "This job has been completed");
+        require(!jobListings[jId].listed, "This job may have been taken or doesn't exist");
         require(!jobListings[jId].paidOut, "This job has been paid out");
-        require(jobListings[jId].numFreelancersAccepted <= jobListings[jId].numOfFreelancers, "Maximum required freelancers have been met!");
 
         totalFreelancers.increment();
         uint id = totalFreelancers.current();
         freelancers[jId][id].id = id;
         freelancers[jId][id].jId = jId;
         freelancers[jId][id].freelancer = bidder;
+        freelancers[jId][id].accepted = true;
 
-        jobListings[jId].numFreelancersAccepted++;
+        jobListings[jId].listed = false;
     }
 
-    function startProjectTimer(uint id) public {
 
-    }
 
-    function getJobs() public view returns (JobStruct[] memory ActiveGames) {
+    function getJobs() public view returns (JobStruct[] memory ActiveJobs) {
         uint available;
 
         for (uint256 i = 1; i <= totalJobListings.current(); i++) {
-            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListings[i].approved) {
+            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListings[i].completed) {
                 available++;
             }
         }
 
-        ActiveGames = new JobStruct[](available);
+        ActiveJobs = new JobStruct[](available);
         uint index;
 
         for (uint256 i = 1; i <= totalJobListings.current(); i++) {
-            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListings[i].approved) {
-                ActiveGames[index++] = jobListings[i];
+            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListings[i].completed) {
+                ActiveJobs[index++] = jobListings[i];
             }
         }
     }

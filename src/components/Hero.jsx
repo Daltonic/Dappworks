@@ -1,14 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaPlus } from "react-icons/fa";
+import { addMonths, differenceInSeconds, startOfSecond } from "date-fns";
+
 
 const Hero = () => {
+  // Function to convert various time units to seconds
+  const convertToSeconds = (value, unit) => {
+      const timeUnitsInSeconds = {
+          seconds: 1000,             // 1000 milliseconds in a second
+          minutes: 1000 * 60,        // 60 seconds in a minute
+          hours: 1000 * 60 * 60,     // 60 minutes in an hour
+          days: 1000 * 60 * 60 * 24, // 24 hours in a day
+          weeks: 1000 * 60 * 60 * 24 * 7, // 7 days in a week
+          months: 1000 * 60 * 60 * 24 * 30.5
+      };
+
+      return value * timeUnitsInSeconds[unit];
+  };
+
+    
+
+
   return (
     <section className="min-h-[89vh]">
       <button className="p-3 bg-green-500 rounded-full text-white fixed bottom-7 right-1">
         <FaPlus className="" />
       </button>
-      <main className="mt-11 px-11 grid grid-cols-3 gap-4">
+      <main className="mt-11 px-11">
         <div className="col-span-2 p-3">
           <h3 className="text-gray-600 text-2xl border-[1px] rounded-t-lg border-gray-300 py-5 px-3">
             Job listings
@@ -38,17 +57,6 @@ const Hero = () => {
               Place Your Bid
             </button>
           </div>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
-        </div>
-        <div className="p-3">
-          <h3 className="text-gray-600 text-lg border-[1px] rounded-t-lg border-gray-300 py-5 px-3">
-            Your Job listings
-          </h3>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
-          <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
           <div className="h-[16rem] border-b border-l border-r border-gray-300"></div>
         </div>
       </main>
