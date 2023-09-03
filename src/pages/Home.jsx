@@ -1,12 +1,13 @@
 
 import React from 'react'
-import { Header, Hero, CreateGame } from '../components'
+import { Header, Hero, CreateJob } from '../components'
 
 const Home = () => {
   return (
     <div>
       <Header />
       <Hero />
+      <CreateJob />
     </div>
   )
 }
