@@ -6,13 +6,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract DappWork is Ownable, ReentrancyGuard {
+contract DappWorks is Ownable, ReentrancyGuard {
     using Counters for Counters.Counter;
 
-    Counters.Counter private totalJobListings;
-    Counters.Counter private totalFreelancers;
-
-    uint totalBalance;
+    Counters.Counter private _jobCounter;
 
     struct JobStruct {
         uint id;
@@ -20,7 +17,7 @@ contract DappWork is Ownable, ReentrancyGuard {
         string jobTitle;
         string description;
         string tags;
-        uint price;
+        uint prize;
         bool paidOut;
         uint timestamp;
         bool listed;
@@ -39,76 +36,83 @@ contract DappWork is Ownable, ReentrancyGuard {
         address bidder;
     }
 
-    uint public percentage = 3000;
+    uint public platformCharge = 5;
 
     mapping(uint => JobStruct) jobListings;
-    mapping(uint => mapping(uint => FreelancerStruct)) freelancers;
+    mapping(uint =>  FreelancerStruct[]) freelancers;
     mapping(uint => BidStruct[]) jobBidders;
 
     mapping(uint => bool) jobListingExists;
 
+    mapping(uint => uint) private jobFreelancerCounters;
+
+    modifier onlyJobOwner(uint id) {
+        require(jobListings[id].owner == msg.sender, "Unauthorized entity");
+        _;
+    }
+
+
     function addJobListing(
         string memory jobTitle,
         string memory description,
-        string memory tags,
-        uint price
+        string memory tags
     ) public payable {
         require(bytes(jobTitle).length > 0, "Please provide a job title");
         require(bytes(description).length > 0, "Please provide a description");
         require(bytes(tags).length > 0, "Please provide tags");
-        require(price > 0 ether, "Please indicate the price");
+        require(msg.value > 0 ether, "Insufficient funds");
 
-        totalBalance += price;
-        totalJobListings.increment();
+        // Increment the counter before using the current value
+        _jobCounter.increment();
+        uint jobId = _jobCounter.current();
 
-        uint id = totalJobListings.current();
+        JobStruct memory jobListing;
 
-        jobListings[id].id = id;
-        jobListings[id].owner = msg.sender;
-        jobListings[id].jobTitle = jobTitle;
-        jobListings[id].description = description;
-        jobListings[id].tags = tags;
-        jobListings[id].price = price;
-        jobListings[id].listed = true;
-        jobListings[id].timestamp = currentTime();
+        jobListing.id = jobId;
+        jobListing.owner = msg.sender;
+        jobListing.jobTitle = jobTitle;
+        jobListing.description = description;
+        jobListing.tags = tags;
+        jobListing.prize = msg.value;
+        jobListing.listed = true;
+        jobListing.timestamp = currentTime();
 
-        jobListingExists[id] = true;
+        jobListings[jobId] = jobListing;
+        jobListingExists[jobId] = true;
     }
+
 
     function deleteJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
-        require(!jobListings[id].listed, "This job has been taken");
+        require(jobListings[id].listed, "This job has been taken");
         require(!jobListings[id].paidOut, "This job has been paid out");
 
-
-        jobListings[id].listed = false;
         jobListingExists[id] = false;
 
-        payTo(jobListings[id].owner, jobListings[id].price);
+        payTo(jobListings[id].owner, jobListings[id].prize);
     }
 
     function updateJob(
         uint id,
         string memory jobTitle,
         string memory description,
-        string memory tags,
-        uint price
+        string memory tags
     ) public {
         require(jobListingExists[id], "This job listing doesn't exist");
-        require(!jobListings[id].listed, "This job has been taken");
+        require(jobListings[id].listed, "This job has been taken");
         require(!jobListings[id].paidOut, "This job has been paid out");
 
 
         jobListings[id].jobTitle = jobTitle;
         jobListings[id].description = description;
         jobListings[id].tags = tags;
-        jobListings[id].price = price;
     }
 
     function bidForJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
         require(!jobListings[id].paidOut, "This job has been paid out");
-        require(!jobListings[id].listed, "This job have been taken");
+        require(jobListings[id].listed, "This job have been taken");
+
 
         BidStruct memory bid;
         bid.jId  = id;
@@ -119,38 +123,101 @@ contract DappWork is Ownable, ReentrancyGuard {
 
     function acceptBid(uint jId, address bidder) public {
         require(jobListingExists[jId], "This job listing doesn't exist");
-        require(!jobListings[jId].listed, "This job have been taken");
+        require(jobListings[jId].listed, "This job have been taken");
         require(!jobListings[jId].paidOut, "This job has been paid out");
 
-        totalFreelancers.increment();
-        uint id = totalFreelancers.current();
-        freelancers[jId][id].id = id;
-        freelancers[jId][id].jId = jId;
-        freelancers[jId][id].freelancer = bidder;
+        jobFreelancerCounters[jId]++;
 
+
+        uint id = jobFreelancerCounters[jId];
+
+        FreelancerStruct memory freelancer;
+
+        freelancer.id = id;
+        freelancer.jId = jId;
+        freelancer.freelancer = bidder;
+        freelancer.isAssigned = true;
+
+        freelancers[jId].push(freelancer);
 
         jobListings[jId].listed = false;
     }
 
+    function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
+        require(jobListingExists[id], "This job listing doesn't exist");
+        return jobBidders[id];
+    }
+
+    function getAcceptedFreelancers(uint id) public view returns (FreelancerStruct[] memory AcceptedFreelancers) {
+        require(jobListingExists[id], "This job listing doesn't exist");
+        return freelancers[id];
+    }
 
 
+    function dispute(uint id) public onlyJobOwner(id) {
+        require(jobListingExists[id], "This job listing doesn't exist");
+        require(jobListings[id].disputed, "This job already disputed");
+        require(!jobListings[id].paidOut, "This job has been paid out");
 
+
+        jobListings[id].disputed = true;
+    }
+
+    function revoke(uint jId, uint id) public  onlyOwner {
+        require(jobListingExists[jId], "This job listing doesn't exist");
+        require(jobListings[jId].disputed, "This job must be on dispute");
+        require(!jobListings[jId].paidOut, "This job has been paid out");
+
+        // Use two separate indexes to access the FreelancerStruct
+        FreelancerStruct storage freelancer = freelancers[jId][id];
+
+        freelancer.isAssigned = false;
+        payTo(jobListings[jId].owner, jobListings[jId].prize);
+        
+        jobListings[id].listed = true;
+    }
+
+    function resolved(uint id) public onlyOwner {
+        require(jobListingExists[id], "This job listing doesn't exist");
+        require(jobListings[id].disputed, "This job must be on dispute");
+        require(!jobListings[id].paidOut, "This job has been paid out");
+
+        jobListings[id].disputed = false;
+    }
+
+    function payout(uint id) public nonReentrant onlyJobOwner(id) {
+        require(jobListingExists[id], "This job listing doesn't exist");
+        require(!jobListings[id].disputed, "This job must not be on dispute");
+        require(!jobListings[id].paidOut, "This job has been paid out");
+
+        uint reward = jobListings[id].prize;
+        uint tax = reward * platformCharge / 100;
+
+        for (uint i = 1; i < freelancers[id].length; i++) {
+            if (freelancers[id][i].isAssigned == true) {
+                payTo(freelancers[id][i].freelancer, reward - tax);
+            }
+        }
+
+        payTo(owner(), tax);
+        jobListings[id].paidOut = true;
+    }
 
     function getJobs() public view returns (JobStruct[] memory ActiveJobs) {
         uint available;
+        uint currentIndex = 0;
 
-        for (uint256 i = 1; i <= totalJobListings.current(); i++) {
-            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListingExists[i]) {
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && jobListings[i].listed && !jobListings[i].paidOut) {
                 available++;
             }
         }
 
         ActiveJobs = new JobStruct[](available);
-        uint index;
 
-        for (uint256 i = 1; i <= totalJobListings.current(); i++) {
-            if (!jobListings[i].listed && !jobListings[i].paidOut && !jobListingExists[i]) {
-                ActiveJobs[index++] = jobListings[i];
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && !jobListings[i].paidOut) {
+                ActiveJobs[currentIndex++] = jobListings[i];
             }
         }
     }
