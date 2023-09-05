@@ -16,14 +16,14 @@ describe('Contracts', () => {
 
   beforeEach(async () => {
     const Contract = await ethers.getContractFactory('DappWorks')
-    ;[deployer, client1, client2, client3, freelancer1, freelancer2, freelancer3] = await ethers.getSigners()
+    ;[deployer, client1, client2, freelancer1, freelancer2] = await ethers.getSigners()
 
     contract = await Contract.deploy();
     await contract.deployed()
   })
 
   beforeEach(async ()=> {
-    await contract.addJobListing(jobTitle, description, tags,  {
+    await contract.connect(client1).addJobListing(jobTitle, description, tags, {
       value: toWei(price),
     });
   })
@@ -60,8 +60,69 @@ describe('Contracts', () => {
       })
 
       it('should confirm bidding for job', async ()=> {
-        
+        await contract.connect(freelancer1).bidForJob(id);
+
+        result = await contract.getBidders(id)
+        expect(result).to.have.lengthOf(1)
       })
+
+      it('should confirm accepting job bid', async ()=> {
+        await contract.connect(freelancer1).bidForJob(id);
+
+        await contract.connect(client1).acceptBid(id, freelancer1.address)
+        result = await contract.connect(client1).getAcceptedFreelancers(id)
+        expect(result).to.have.lengthOf(1)
+      })
+
+      it("should confirm disputing a job", async () => {
+        await contract.connect(client1).dispute(id);
+
+        result = await contract.getJob(id);
+        expect(result.disputed).to.be.true;
+      });
+
+       it("should confirm revoking a disputed job", async () => {
+         // Place a bid by a freelancer
+         await contract.connect(freelancer1).bidForJob(id);
+
+         // Accept the bid by the client
+         await contract.connect(client1).acceptBid(id, freelancer1.address);
+
+         // Dispute the job
+         await contract.connect(client1).dispute(id);
+
+         // Revoke the job after it's been disputed
+         await contract.connect(deployer).revoke(id, 0); // Index starts from 0
+
+         result = await contract.getJob(id);
+         expect(result.listed).to.be.true;
+         // Ensure that the assigned freelancer's isAssigned is set to false
+         const freelancers = await contract
+           .getAcceptedFreelancers(id);
+          for (let i = 0; i < freelancers.length; i++) {
+            if (result[i].id == 0) {
+              expect(freelancers[id].isAssigned).to.be.false;
+            }
+          }
+       });
+
+       it("should confirm resolving a disputed job", async () => {
+         await contract.connect(client1).dispute(id); // Dispute the job first
+         await contract.connect(deployer).resolved(id);
+
+         result = await contract.getJob(id);
+         expect(result.disputed).to.be.false;
+       });
+
+       it("should confirm payout of a job", async () => {
+         await contract.connect(freelancer1).bidForJob(id);
+         await contract.connect(client1).acceptBid(id, freelancer1.address);
+         await contract.connect(client1).payout(id);
+
+         result = await contract.getJob(id);
+         expect(result.paidOut).to.be.true;
+       });
   })
 
 })
+
