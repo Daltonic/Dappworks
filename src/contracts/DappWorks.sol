@@ -27,13 +27,14 @@ contract DappWorks is Ownable, ReentrancyGuard {
     struct FreelancerStruct {
         uint id;
         uint jId;
-        address freelancer;
+        address account;
         bool isAssigned;
     }
 
     struct BidStruct {
+        uint id;
         uint jId;
-        address bidder;
+        address account;
     }
 
     uint public platformCharge = 5;
@@ -43,13 +44,13 @@ contract DappWorks is Ownable, ReentrancyGuard {
     mapping(uint => BidStruct[]) jobBidders;
 
     mapping(uint => bool) jobListingExists;
+    mapping(uint => mapping(address => bool)) public hasPlacedBid;
 
 
     modifier onlyJobOwner(uint id) {
         require(jobListings[id].owner == msg.sender, "Unauthorized entity");
         _;
     }
-
 
     function addJobListing(
         string memory jobTitle,
@@ -79,7 +80,6 @@ contract DappWorks is Ownable, ReentrancyGuard {
         jobListings[jobId] = jobListing;
         jobListingExists[jobId] = true;
     }
-
 
     function deleteJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
@@ -111,38 +111,45 @@ contract DappWorks is Ownable, ReentrancyGuard {
         require(jobListingExists[id], "This job listing doesn't exist");
         require(!jobListings[id].paidOut, "This job has been paid out");
         require(jobListings[id].listed, "This job have been taken");
-
+        require(!hasPlacedBid[id][msg.sender], "You have placed a bid already");
 
         BidStruct memory bid;
+        bid.id = jobBidders[id].length + 1;
         bid.jId  = id;
-        bid.bidder = msg.sender;
+        bid.account = msg.sender;
+        hasPlacedBid[id][msg.sender] = true;
 
         jobBidders[id].push(bid);
     }
 
-    function acceptBid(uint jId, address bidder) public {
+    function acceptBid(uint id, uint jId, address bidder) public onlyJobOwner(jId){
         require(jobListingExists[jId], "This job listing doesn't exist");
         require(jobListings[jId].listed, "This job have been taken");
         require(!jobListings[jId].paidOut, "This job has been paid out");
+        require(hasPlacedBid[jId][bidder], "UnIdentified bidder");
+
 
         FreelancerStruct memory freelancer;
 
         freelancer.id = freelancers[jId].length;
         freelancer.jId = jId;
-        freelancer.freelancer = bidder;
+        freelancer.account = bidder;
         freelancer.isAssigned = true;
 
         freelancers[jId].push(freelancer);
 
+        for(uint i = 0; i < jobBidders[jId].length; i++) {
+            if(jobBidders[jId][i].id != id) {
+                hasPlacedBid[jId][jobBidders[jId][i].account] = false;
+            }
+        }
+
         jobListings[jId].listed = false;
     }
 
-    function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
-        require(jobListingExists[id], "This job listing doesn't exist");
-        return jobBidders[id];
+    function bidStatus(uint id) public view returns (bool) {
+        return hasPlacedBid[id][msg.sender];
     }
-
-
 
     function dispute(uint id) public onlyJobOwner(id) {
         require(jobListingExists[id], "This job listing doesn't exist");
@@ -167,7 +174,6 @@ contract DappWorks is Ownable, ReentrancyGuard {
         jobListings[jId].listed = true;
     }
 
-
     function resolved(uint id) public onlyOwner {
         require(jobListingExists[id], "This job listing doesn't exist");
         require(jobListings[id].disputed, "This job must be on dispute");
@@ -175,7 +181,6 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
         jobListings[id].disputed = false;
     }
-
 
     function payout(uint id) public nonReentrant onlyJobOwner(id) {
         require(jobListingExists[id], "This job listing doesn't exist");
@@ -187,7 +192,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
         for (uint i = 1; i < freelancers[id].length; i++) {
             if (freelancers[id][i].isAssigned == true) {
-                payTo(freelancers[id][i].freelancer, reward - tax);
+                payTo(freelancers[id][i].account, reward - tax);
             }
         }
 
@@ -195,27 +200,13 @@ contract DappWorks is Ownable, ReentrancyGuard {
         jobListings[id].paidOut = true;
     }
 
-
-    function getAcceptedFreelancers(uint id) public view returns (FreelancerStruct[] memory) {
+    function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
         require(jobListingExists[id], "This job listing doesn't exist");
+        return jobBidders[id];
+    }
 
-        uint acceptedCount = 0;
-        for (uint i = 0; i < freelancers[id].length; i++) {
-            if (freelancers[id][i].isAssigned) {
-                acceptedCount++;
-            }
-        }
-
-        FreelancerStruct[] memory acceptedFreelancers = new FreelancerStruct[](acceptedCount);
-
-        uint index = 0;
-        for (uint i = 0; i < freelancers[id].length; i++) {
-            if (freelancers[id][i].isAssigned) {
-                acceptedFreelancers[index++] = freelancers[id][i];
-            }
-        }
-
-        return acceptedFreelancers;
+    function getFreelancers(uint id) public view returns (FreelancerStruct[] memory) {
+        return freelancers[id];
     }
 
     function getAcceptedFreelancer(uint id) public view returns (FreelancerStruct memory) {
