@@ -14,7 +14,7 @@ const Header = () => {
           <Link to={"/joblisting/1"} className="text-gray-600">
             My Projects
           </Link>
-          <button className="bg-green-600 text-white py-1 px-5 rounded-full">
+          <button className="bg-green-500 text-white py-1 px-5 rounded-full">
             connect wallet
           </button>
         </div>

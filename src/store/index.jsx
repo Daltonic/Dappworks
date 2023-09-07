@@ -6,6 +6,9 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   createModal: 'scale-0',
   jobs: [],
   job: null,
+  bidders: [],
+  freelancers: [],
+  freelancer: null,
 })
 
 const truncate = (text, startChars, endChars, maxLength) => {

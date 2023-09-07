@@ -53,7 +53,17 @@ describe('Contracts', () => {
         result = await contract.getJobs();
         expect(result).to.be.have.lengthOf(1);
 
-        await contract.deleteJob(id)
+        await contract.return new Promise(async (resolve, reject) => {
+     try {
+       const contract = await getEthereumContract();
+       tx = await contract.updateJob(id, jobTitle, description, tags);
+       await tx.wait();
+       resolve(tx);
+     } catch (err) {
+       reportError(err);
+       reject(err);
+     }
+   });(id)
 
         result = await contract.getJobs();
         expect(result).to.be.have.lengthOf(0);
@@ -69,7 +79,7 @@ describe('Contracts', () => {
       it('should confirm accepting job bid', async ()=> {
         await contract.connect(freelancer1).bidForJob(id);
 
-        await contract.connect(client1).acceptBid(id, freelancer1.address)
+        await contract.connect(client1).acceptBid(0, id, freelancer1.address)
         result = await contract.connect(client1).getAcceptedFreelancers(id)
         expect(result).to.have.lengthOf(1)
       })
@@ -86,7 +96,7 @@ describe('Contracts', () => {
          await contract.connect(freelancer1).bidForJob(id);
 
          // Accept the bid by the client
-         await contract.connect(client1).acceptBid(id, freelancer1.address);
+         await contract.connect(client1).acceptBid(0, id, freelancer1.address);
 
          // Dispute the job
          await contract.connect(client1).dispute(id);
@@ -97,8 +107,7 @@ describe('Contracts', () => {
          result = await contract.getJob(id);
          expect(result.listed).to.be.true;
          // Ensure that the assigned freelancer's isAssigned is set to false
-         const freelancers = await contract
-           .getAcceptedFreelancers(id);
+         const freelancers = await contract.getFreelancers(id);
           for (let i = 0; i < freelancers.length; i++) {
             if (result[i].id == 0) {
               expect(freelancers[id].isAssigned).to.be.false;
