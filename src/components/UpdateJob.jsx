@@ -1,31 +1,31 @@
-import React, { useState } from 'react'
-import { setGlobalState, truncate, useGlobalState } from '../store'
-import { FaTimes } from 'react-icons/fa'
+import React, { useState } from "react";
+import { setGlobalState, truncate, useGlobalState } from "../store";
+import { FaTimes } from "react-icons/fa";
 
-const CreateJob = () => {
-    const [skills, setSkills] = useState([])
-    const [skill, setSkill] = useState("")
-    const [createModal] = useGlobalState('createModal')
+const UpdateJob = () => {
+  const [skills, setSkills] = useState([]);
+  const [skill, setSkill] = useState("");
+  const [createModal] = useGlobalState("createModal");
 
-    const addSkills = () => {
-      if (skills.length != 5) {
-        setSkills((prevState) => [...prevState, skill]);
-      }
-      setSkill("");
-    };
-
-    const removeSkill = (index) => {
-      skills.splice(index, 1);
-      setSkills(() => [...skills]);
-    };
-
-    const closeModal = () => {
-      setGlobalState("createModal", "scale-0");
-    };
-
-    const handleSubmit = (e)=> {
-        e.preventDefault()
+  const addSkills = () => {
+    if (skills.length != 5) {
+      setSkills((prevState) => [...prevState, skill]);
     }
+    setSkill("");
+  };
+
+  const removeSkill = (index) => {
+    skills.splice(index, 1);
+    setSkills(() => [...skills]);
+  };
+
+  const closeModal = () => {
+    setGlobalState("createModal", "scale-0");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
 
   return (
     <div
@@ -84,7 +84,7 @@ const CreateJob = () => {
                   </button>
                 ) : null}
               </div>
-              <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-1 rounded-xl mt-2 mb-4 ">
+              <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-2 rounded-xl mt-2 mb-4 ">
                 {skills.map((skill, i) => (
                   <div
                     key={i}
@@ -124,6 +124,6 @@ const CreateJob = () => {
       </div>
     </div>
   );
-}
+};
 
-export default CreateJob
+export default UpdateJob;
