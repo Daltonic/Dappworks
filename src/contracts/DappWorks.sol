@@ -218,7 +218,19 @@ contract DappWorks is Ownable, ReentrancyGuard {
         return acceptedFreelancers;
     }
 
+    function getAcceptedFreelancer(uint id) public view returns (FreelancerStruct memory) {
+        require(jobListingExists[id], "This job listing doesn't exist");
 
+        for (uint i = 0; i < freelancers[id].length; i++) {
+            if (freelancers[id][i].isAssigned) {
+                return freelancers[id][i];
+            }
+        }
+
+        // If no freelancer is assigned, return an empty struct or handle it as needed.
+        FreelancerStruct memory emptyFreelancer;
+        return emptyFreelancer;
+    }
 
     function getJobs() public view returns (JobStruct[] memory ActiveJobs) {
         uint available;

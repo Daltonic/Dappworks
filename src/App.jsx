@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
+import { Home, JobListing } from './pages'
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
 
@@ -9,6 +9,7 @@ const App = () => {
     <div className="min-h-screen font-[poppins]">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/joblisting/:id" element={<JobListing />} />
       </Routes>
 
       <ToastContainer
@@ -24,7 +25,7 @@ const App = () => {
         theme="dark"
       />
     </div>
-  )
+  );
 }
 
 export default App
