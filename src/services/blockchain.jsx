@@ -285,7 +285,7 @@ const structuredJobs = (jobs) =>
       owner: job.owner.toLowerCase(),
       jobTitle: job.jobTitle,
       description: job.description,
-      tags: job.tags,
+      tags: job.tags.split(','),
       prize: fromWei(job.prize),
       paidOut: job.paidOut,
       timestamp: job.timestamp,

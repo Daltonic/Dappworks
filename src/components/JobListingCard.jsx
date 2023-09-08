@@ -7,7 +7,7 @@ const JobListingCard = ({ jobListing }) => {
       <h4>{jobListing.jobTitle}</h4>
       <div className="flex mt-2 items-center">
         <FaEthereum className="text-md cursor-pointer" />
-        <span className="text-md">{jobListing.price}</span>
+        <span className="text-md">{jobListing.prize}</span>
       </div>
       <div className="flex items-center mt-3 text-sm flex-wrap gap-3">
         {jobListing.tags.length > 0
@@ -20,7 +20,7 @@ const JobListingCard = ({ jobListing }) => {
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
       <div className="text-sm mt-4 flex flex-col">
-        <span>Project status: {jobListing.status}</span>
+        <span>Project status: {jobListing.listed?'open':'closed'}</span>
       </div>
       <button className='bg-green-500 px-3 py-1 text-sm text-white rounded-md mt-5'>Place Bid</button>
     </div>
