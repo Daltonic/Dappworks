@@ -53,17 +53,7 @@ describe('Contracts', () => {
         result = await contract.getJobs();
         expect(result).to.be.have.lengthOf(1);
 
-        await contract.return new Promise(async (resolve, reject) => {
-     try {
-       const contract = await getEthereumContract();
-       tx = await contract.updateJob(id, jobTitle, description, tags);
-       await tx.wait();
-       resolve(tx);
-     } catch (err) {
-       reportError(err);
-       reject(err);
-     }
-   });(id)
+        await contract.deleteJob(id)
 
         result = await contract.getJobs();
         expect(result).to.be.have.lengthOf(0);
@@ -80,7 +70,7 @@ describe('Contracts', () => {
         await contract.connect(freelancer1).bidForJob(id);
 
         await contract.connect(client1).acceptBid(0, id, freelancer1.address)
-        result = await contract.connect(client1).getAcceptedFreelancers(id)
+        result = await contract.connect(client1).getFreelancers(id);
         expect(result).to.have.lengthOf(1)
       })
 
@@ -125,7 +115,7 @@ describe('Contracts', () => {
 
        it("should confirm payout of a job", async () => {
          await contract.connect(freelancer1).bidForJob(id);
-         await contract.connect(client1).acceptBid(id, freelancer1.address);
+         await contract.connect(client1).acceptBid(0, id, freelancer1.address);
          await contract.connect(client1).payout(id);
 
          result = await contract.getJob(id);
