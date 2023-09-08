@@ -9,6 +9,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   bidders: [],
   freelancers: [],
   freelancer: null,
+  status: null,
 })
 
 const truncate = (text, startChars, endChars, maxLength) => {

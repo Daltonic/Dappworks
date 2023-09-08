@@ -130,7 +130,7 @@ const CreateJob = () => {
                     key={i}
                     className="p-2 rounded-full text-gray-500 bg-gray-200 font-semibold
                 flex items-center w-max cursor-pointer active:bg-gray-300
-                transition duration-300 ease space-x-2 text-xs mr-2"
+                transition duration-300 ease space-x-2 text-xs mr-2 mt-2"
                   >
                     <span>{truncate(skill, 4, 4, 11)}</span>
                     <button

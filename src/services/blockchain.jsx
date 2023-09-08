@@ -46,7 +46,7 @@ const isWalletConnected = async () => {
       setGlobalState("connectedAccount", accounts[0]);
       await loadData();
       await isWalletConnected();
-      await logOutWithCometChat();
+      // await logOutWithCometChat();
     });
 
     if (accounts.length) {
@@ -217,7 +217,7 @@ const bidStatus = async (id) => {
   try {
     const contract = await getEthereumContract()
     const status = await contract.bidStatus(id)
-    return status
+    setGlobalState('status', status)
   } catch (err) {
     reportError(err)
   }
@@ -277,6 +277,10 @@ const getJob = async (id) => {
     reportError(err);
   }
 }
+
+const loadData = async () => {
+  await getJobs();
+};
 
 const structuredJobs = (jobs) =>
   jobs

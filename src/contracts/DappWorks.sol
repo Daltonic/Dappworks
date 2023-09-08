@@ -109,6 +109,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
     function bidForJob(uint id) public {
         require(jobListingExists[id], "This job listing doesn't exist");
+        require(jobListings[id].owner != msg.sender, "Forbidden action!");
         require(!jobListings[id].paidOut, "This job has been paid out");
         require(jobListings[id].listed, "This job have been taken");
         require(!hasPlacedBid[id][msg.sender], "You have placed a bid already");
