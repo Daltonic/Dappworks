@@ -237,8 +237,27 @@ contract DappWorks is Ownable, ReentrancyGuard {
         ActiveJobs = new JobStruct[](available);
 
         for (uint256 i = 1; i <= _jobCounter.current(); i++) {
-            if (jobListingExists[i] && !jobListings[i].paidOut) {
+            if (jobListingExists[i] && jobListings[i].listed && !jobListings[i].paidOut) {
                 ActiveJobs[currentIndex++] = jobListings[i];
+            }
+        }
+    }
+
+    function getMyJobs() public view returns (JobStruct[] memory MyJobs) {
+        uint available;
+        uint currentIndex = 0;
+
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && jobListings[i].owner == msg.sender) {
+                available++;
+            }
+        }
+
+        MyJobs = new JobStruct[](available);
+
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && jobListings[i].owner == msg.sender) {
+                MyJobs[currentIndex++] = jobListings[i];
             }
         }
     }

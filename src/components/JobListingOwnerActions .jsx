@@ -6,14 +6,21 @@ import {
   FaExclamationCircle,
   FaMoneyBill,
 } from "react-icons/fa";
+import { useGlobalState, setGlobalState } from "../store";
 
 const JobListingOwnerActions = ({ jobListing, editable }) => {
+
+  const openUpdateModal = ()=> {
+    setGlobalState('updateModal', 'scale-100')
+    setGlobalState("jobListing", jobListing);
+  }
+
   return (
-    <div className="border-t border-b border-l border-r border-gray-300 py-3 px-5">
+    <div className="border-t border-b border-l border-r border-gray-300 py-3 px-5 mt-2">
       <h4>{jobListing.jobTitle}</h4>
       <div className="flex mt-2 items-center">
         <FaEthereum className="text-md cursor-pointer" />
-        <span className="text-md">{jobListing.price}</span>
+        <span className="text-md">{jobListing.prize}</span>
       </div>
       <div className="flex items-center mt-3 text-sm flex-wrap gap-3">
         {jobListing.tags.length > 0
@@ -25,13 +32,13 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
           : null}
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
-      <div className="text-sm mt-4 flex flex-col">
-        <span>Project status: {jobListing.status}</span>
-      </div>
       <div className="flex space-x-2">
         {editable && !jobListing.paidout && (
           <div className="flex mt-5 space-x-3">
-            <button className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md">
+            <button
+              onClick={openUpdateModal}
+              className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
+            >
               <FaPenAlt />
               <span className="text-sm">Update</span>
             </button>

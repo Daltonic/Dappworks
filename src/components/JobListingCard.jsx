@@ -26,14 +26,6 @@ const JobListingCard = ({ jobListing }) => {
     );
   };
 
-  const chk = async ()=> {
-    await bidStatus(jobListing.id.toNumber())
-  }
-
-  useEffect(()=>{
-
-  },[])
-
   return (
     <div className="border-b border-l border-r border-gray-300 py-6 px-5">
       <h4>{jobListing.jobTitle}</h4>
@@ -51,9 +43,6 @@ const JobListingCard = ({ jobListing }) => {
           : null}
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
-      <div className="text-sm mt-4 flex flex-col">
-        <span>Project status: {jobListing.listed ? "open" : "closed"}</span>
-      </div>
       {connectedAccount != jobListing.owner && !status ? (
         <button
           onClick={() => handleBidding(jobListing.id)}
@@ -67,7 +56,7 @@ const JobListingCard = ({ jobListing }) => {
         </button>
       ) : (
         <button className="mt-5 text-sm bg-green-400 px-3 py-2 rounded-sm text-white">
-          View job bidders
+          Manage
         </button>
       )}
     </div>
