@@ -3,6 +3,7 @@ import { Home, JobListing } from './pages'
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
 import { isWalletConnected, getJobs } from './services/blockchain'
+import MyProjects from './pages/MyProjects'
 
 const App = () => {
   const fetchData = async ()=> {
@@ -18,6 +19,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/joblisting/:id" element={<JobListing />} />
+        <Route path='/myprojects' element={<MyProjects />}/>
       </Routes>
 
       <ToastContainer

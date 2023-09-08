@@ -267,6 +267,17 @@ const getJobs = async () => {
   }
 }
 
+const getMyJobs = async () => {
+  if (!ethereum) return alert("Please install Metamask");
+  try {
+    const contract = await getEthereumContract();
+    const jobs = await contract.getMyJobs();
+    setGlobalState("myjobs", structuredJobs(jobs));
+  } catch (err) {
+    reportError(err);
+  }
+}
+
 const getJob = async (id) => {
   if (!ethereum) return alert("Please install Metamask");
   try {
@@ -330,5 +341,6 @@ export {
   getFreelancers,
   getAcceptedFreelancer,
   getJobs,
+  getMyJobs,
   getJob,
 };
