@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
 import { setGlobalState, truncate, useGlobalState } from '../store'
 import { FaTimes } from 'react-icons/fa'
+import { addJobListing, getJobs } from '../services/blockchain'
+import { toast } from 'react-toastify'
 
 const CreateJob = () => {
-    const [skills, setSkills] = useState([])
-    const [skill, setSkill] = useState("")
-    const [createModal] = useGlobalState('createModal')
+  const [createModal] = useGlobalState('createModal')
+  const [jobTitle, setJobTitle] = useState("")
+  const [prize, setPrize] = useState("")
+  const [description, setDescription] = useState("")
+  const [skill, setSkill] = useState("")
+  const [skills, setSkills] = useState([])
 
     const addSkills = () => {
       if (skills.length != 5) {
@@ -21,10 +26,41 @@ const CreateJob = () => {
 
     const closeModal = () => {
       setGlobalState("createModal", "scale-0");
+      setJobTitle('')
+      setPrize('')
+      setSkills([])
+      setSkill('')
+      setDescription('')
     };
 
-    const handleSubmit = (e)=> {
+    const handleSubmit = async (e)=> {
         e.preventDefault()
+
+        if(jobTitle == '' && prize == '' && skills.length != 3 && description == '') return
+        const params = {
+          jobTitle,
+          description,
+          tags: skills.slice(0, 5).join(','),
+          description,
+          prize
+        }
+
+        await toast.promise(
+          new Promise(async (resolve, reject) => {
+            await addJobListing(params)
+              .then(async () => {
+                closeModal();
+                await getJobs();
+                resolve();
+              })
+              .catch(() => reject());
+          }),
+          {
+            pending: "Approve transaction...",
+            success: "job added successfully 👌",
+            error: "Encountered error 🤯",
+          }
+        );
     }
 
   return (
@@ -47,50 +83,54 @@ const CreateJob = () => {
                 <label htmlFor="jt">Job Title</label>
                 <input
                   id="jt"
+                  value={jobTitle}
                   placeholder="e.g. content writer..."
                   type="text"
                   className="rounded-md text-sm"
+                  onChange={(e) => setJobTitle(e.target.value)}
                 />
               </div>
 
               <div className="mb-5 flex flex-col space-y-1">
-                <label htmlFor="desc">Price</label>
+                <label htmlFor="desc">Prize</label>
                 <input
                   id="number"
+                  value={prize}
                   placeholder="eg. 0.04"
                   step={0.0001}
                   type="text"
                   className="rounded-md text-sm"
+                  onChange={(e) => setPrize(e.target.value)}
                 />
               </div>
 
               <div className="mb-1 flex flex-col space-y-1 relative">
                 <label htmlFor="desc">Featured skills</label>
                 <input
-                  id="number"
+                  id="text"
                   step={0.0001}
                   type="text"
                   value={skill}
                   onChange={(e) => setSkill(e.target.value)}
                   className="rounded-md text-sm"
-                  placeholder="maximum of 5 skills required"
+                  placeholder="maximum of 5 skills"
                 />
                 {skills.length != 5 ? (
-                  <button
-                    className="absolute top-[29px] right-1 py-1 px-4 bg-green-500 text-white text-sm rounded-md"
+                  <span
+                    className="cursor-pointer absolute top-[29px] right-1 py-1 px-4 bg-green-500 text-white text-sm rounded-md"
                     onClick={addSkills}
                   >
                     add
-                  </button>
+                  </span>
                 ) : null}
               </div>
-              <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-1 rounded-xl mt-2 mb-4 ">
+              <div className="flex items-center flex-wrap rounded-xl mt-2 mb-4 ">
                 {skills.map((skill, i) => (
                   <div
                     key={i}
                     className="p-2 rounded-full text-gray-500 bg-gray-200 font-semibold
                 flex items-center w-max cursor-pointer active:bg-gray-300
-                transition duration-300 ease space-x-2 text-xs"
+                transition duration-300 ease space-x-2 text-xs mr-2"
                   >
                     <span>{truncate(skill, 4, 4, 11)}</span>
                     <button
@@ -108,9 +148,11 @@ const CreateJob = () => {
                 <label htmlFor="desc">Description</label>
                 <textarea
                   id="desc"
+                  value={description}
                   type="text"
                   placeholder="write something beautiful..."
                   className="rounded-b-md focus:outline-none focus:ring-0 text-sm"
+                  onChange={(e) => setDescription(e.target.value)}
                 ></textarea>
               </div>
               <div>

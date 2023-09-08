@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connectWallet } from '../services/blockchain'
+import { truncate, useGlobalState } from '../store'
 
 const Header = () => {
+  const [connectedAccount] = useGlobalState('connectedAccount')
 
   return (
     <header className="bg-white p-1">
@@ -14,9 +17,19 @@ const Header = () => {
           <Link to={"/joblisting/1"} className="text-gray-600">
             My Projects
           </Link>
-          <button className="bg-green-500 text-white py-1 px-5 rounded-full">
-            connect wallet
-          </button>
+
+          {connectedAccount ? (
+            <button className="bg-green-500 text-white py-1 px-5 rounded-full">
+              {truncate(connectedAccount, 4, 4, 11)}
+            </button>
+          ) : (
+            <button
+              className="bg-green-500 text-white py-1 px-5 rounded-full"
+              onClick={connectWallet}
+            >
+              connect wallet
+            </button>
+          )}
         </div>
       </main>
     </header>

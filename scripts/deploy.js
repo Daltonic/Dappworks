@@ -4,7 +4,7 @@ const fs = require('fs')
 const toWei = (num) => ethers.utils.parseEther(num.toString())
 
 async function main() {
-  const contract_name = 'PlayToEarn'
+  const contract_name = 'DappWorks'
   const Contract = await ethers.getContractFactory(contract_name)
   const contract = await Contract.deploy()
 
