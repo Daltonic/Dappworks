@@ -5,6 +5,7 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   currentUser: null,
   createModal: 'scale-0',
   updateModal: 'scale-0',
+  deleteModal: 'scale-0',
   jobs: [],
   jobListing: null,
   myjobs:[],

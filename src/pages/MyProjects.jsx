@@ -3,6 +3,7 @@ import { Header, JobListingOwnerActions } from '../components'
 import { getMyJobs } from '../services/blockchain'
 import { useGlobalState } from '../store'
 import UpdateJob from '../components/UpdateJob'
+import DeleteJob from '../components/DeleteJob'
 
 const MyProjects = () => {
   const [myjobs] = useGlobalState('myjobs')
@@ -32,6 +33,7 @@ const MyProjects = () => {
         {myjobs && (
           <>
            <UpdateJob />
+           <DeleteJob />
           </>
         )}
       </div>

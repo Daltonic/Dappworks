@@ -93,7 +93,7 @@ const UpdateJob = () => {
             <FaTimes />
           </button>
           <div>
-            <h3 className="text-xl mb-8">Create a Job</h3>
+            <h3 className="text-xl mb-8">Update Job</h3>
             <form className="" onSubmit={handleSubmit}>
               <div className="mb-5 flex flex-col space-y-1">
                 <label htmlFor="jt">Job Title</label>
