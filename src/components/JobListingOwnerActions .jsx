@@ -15,6 +15,11 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
     setGlobalState("jobListing", jobListing);
   }
 
+  const openDeleteModal = ()=> {
+    setGlobalState('deleteModal', 'scale-100')
+    setGlobalState("jobListing", jobListing);
+  }
+
   return (
     <div className="border-t border-b border-l border-r border-gray-300 py-3 px-5 mt-2">
       <h4>{jobListing.jobTitle}</h4>
@@ -42,7 +47,10 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
               <FaPenAlt />
               <span className="text-sm">Update</span>
             </button>
-            <button className="flex items-center px-2 py-1 border-[1px] border-red-500 text-red-500 space-x-2 rounded-md text-sm">
+            <button
+              onClick={openDeleteModal}
+              className="flex items-center px-2 py-1 border-[1px] border-red-500 text-red-500 space-x-2 rounded-md text-sm"
+            >
               <FaTrashAlt />
               <span className="text-sm">Delete</span>
             </button>
