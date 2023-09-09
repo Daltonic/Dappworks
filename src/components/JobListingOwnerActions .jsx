@@ -58,10 +58,14 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
               <FaExclamationCircle />
               <span className="text-sm">Dispute</span>
             </button>
-            <button className="flex items-center px-3 py-1 border-[1px] border-sky-500 text-sky-500 space-x-2 rounded-md">
-              <FaMoneyBill />
-              <span className="text-sm">Pay</span>
-            </button>
+            {
+              !jobListing.listed && (
+                <button className="flex items-center px-3 py-1 border-[1px] border-sky-500 text-sky-500 space-x-2 rounded-md">
+                  <FaMoneyBill />
+                  <span className="text-sm">Pay</span>
+                </button>
+              )
+            }
           </div>
         )}
 

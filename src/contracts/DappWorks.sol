@@ -185,6 +185,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
     function payout(uint id) public nonReentrant onlyJobOwner(id) {
         require(jobListingExists[id], "This job listing doesn't exist");
+        require(!jobListings[id].listed, "This job has not been taken");
         require(!jobListings[id].disputed, "This job must not be on dispute");
         require(!jobListings[id].paidOut, "This job has been paid out");
 
