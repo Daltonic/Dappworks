@@ -45,6 +45,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
     mapping(uint => bool) jobListingExists;
     mapping(uint => mapping(address => bool)) public hasPlacedBid;
+    mapping(uint => bool) public isBidAccepted;
 
 
     modifier onlyJobOwner(uint id) {
@@ -146,6 +147,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         }
 
         jobListings[jId].listed = false;
+        isBidAccepted[jId] = true;
     }
 
     function bidStatus(uint id) public view returns (bool) {
@@ -204,7 +206,17 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
     function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
         require(jobListingExists[id], "This job listing doesn't exist");
-        return jobBidders[id];
+
+        // Check if a bid has been accepted for this job listing
+        if (isBidAccepted[id]) {
+        // If a bid has been accepted, return an empty array to indicate the job is taken
+        Bidders = new BidStruct[](0);
+        } else {
+        // If no bid has been accepted, return the list of bidders
+        Bidders = jobBidders[id];
+        }
+
+        return Bidders;
     }
 
     function getFreelancers(uint id) public view returns (FreelancerStruct[] memory) {

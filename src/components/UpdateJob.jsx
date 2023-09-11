@@ -46,9 +46,9 @@ const UpdateJob = () => {
     e.preventDefault();
 
     if (
-      jobTitle == "" &&
-      prize == "" &&
-      skills.length != 3 &&
+      jobTitle == "" ||
+      prize == "" ||
+      skills.length < 3 ||
       description == ""
     )
       return;
