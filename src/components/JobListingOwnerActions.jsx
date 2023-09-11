@@ -7,6 +7,8 @@ import {
   FaMoneyBill,
   FaArrowRight,
 } from "react-icons/fa";
+import { BsChatDotsFill } from "react-icons/bs";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { useGlobalState, setGlobalState } from "../store";
 import { useNavigate } from "react-router-dom";
 
@@ -18,9 +20,18 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
     setGlobalState("jobListing", jobListing);
   }
 
+  const openPayoutModal = ()=> {
+    setGlobalState('payoutModal', 'scale-100')
+    setGlobalState("jobListing", jobListing);
+  }
+
   const openDeleteModal = ()=> {
     setGlobalState('deleteModal', 'scale-100')
     setGlobalState("jobListing", jobListing);
+  }
+
+  const handleChat = ()=> {
+    setGlobalState("chatAuthModal", "scale-100");
   }
 
   const viewBidders = (id)=> {
@@ -45,7 +56,7 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
       <div className="flex space-x-2">
-        {editable && !jobListing.paidout && (
+        {editable && !jobListing.paidOut && (
           <div className="flex mt-5 space-x-3">
             {jobListing.listed && (
               <>
@@ -69,25 +80,43 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                 </button>
               </>
             )}
-            <button
-              className="text-sm py-1 px-3 bg-green-400 text-white flex items-center space-x-3 rounded-md"
-              onClick={() => viewBidders(jobListing.id)}
-            >
-              <span>View bidders</span>
-              <FaArrowRight className="-rotate-45" />
-            </button>
-            {!jobListing.listed && (
-              <button className="flex items-center px-3 py-1 border-[1px] border-sky-500 text-sky-500 space-x-2 rounded-md">
-                <FaMoneyBill />
-                <span className="text-sm">Pay</span>
+
+            {jobListing.listed && (
+              <button
+                className="text-sm py-1 px-3 bg-green-400 text-white flex items-center space-x-3 rounded-md"
+                onClick={() => viewBidders(jobListing.id)}
+              >
+                <span>View bidders</span>
+                <FaArrowRight className="-rotate-45" />
               </button>
+            )}
+            {!jobListing.listed && !jobListing.paidOut && (
+              <>
+                <button
+                  onClick={openPayoutModal}
+                  className="flex items-center px-3 py-1 border-[1px] border-sky-500 text-sky-500 space-x-2 rounded-md"
+                >
+                  <FaMoneyBill />
+                  <span className="text-sm">Pay</span>
+                </button>
+                <button
+                  onClick={handleChat}
+                  className="flex items-center px-3 py-1 border-[1px] bg-sky-600 text-white space-x-2 rounded-md"
+                >
+                  <BsChatDotsFill />
+                  <span className="text-sm">Chat freelancer</span>
+                </button>
+              </>
             )}
           </div>
         )}
 
-        {editable && jobListing.paidout && (
-          <div>
-            <button className="">Paid Out</button>
+        {editable && jobListing.paidOut == true && (
+          <div className="">
+            <button className="text-sm px-2 py-1 text-green-600 mt-3 flex items-center space-x-1">
+              <span>Completed</span>
+              <IoMdCheckmarkCircleOutline />
+            </button>
           </div>
         )}
       </div>

@@ -1,112 +1,117 @@
-import { CometChat } from '@cometchat-pro/chat'
-import { setGlobalState } from '../store'
+import { CometChat } from "@cometchat-pro/chat";
+import { getGlobalState } from "../store";
 
-const COMETCHAT_CONSTANTS = {
+const CONSTANTS = {
   APP_ID: process.env.REACT_APP_COMET_CHAT_APP_ID,
   REGION: process.env.REACT_APP_COMET_CHAT_REGION,
-  AUTH_KEY: process.env.REACT_APP_COMET_CHAT_AUTH_KEY,
-}
+  Auth_Key: process.env.REACT_APP_COMET_CHAT_AUTH_KEY,
+};
 
 const initCometChat = async () => {
-  const appID = COMETCHAT_CONSTANTS.APP_ID
-  const region = COMETCHAT_CONSTANTS.REGION
+  const appID = CONSTANTS.APP_ID;
+  const region = CONSTANTS.REGION;
 
   const appSetting = new CometChat.AppSettingsBuilder()
     .subscribePresenceForAllUsers()
     .setRegion(region)
-    .build()
+    .build();
 
   await CometChat.init(appID, appSetting)
-    .then(() => console.log('Initialization completed successfully'))
-    .catch((error) => console.log(error))
-}
+    .then(() => console.log("Initialization completed successfully"))
+    .catch((error) => error);
+};
 
-const loginWithCometChat = async (UID) => {
-  const authKey = COMETCHAT_CONSTANTS.AUTH_KEY
+const loginWithCometChat = async () => {
+  const authKey = CONSTANTS.Auth_Key;
+  const UID = getGlobalState("connectedAccount");
 
   return new Promise(async (resolve, reject) => {
     await CometChat.login(UID, authKey)
       .then((user) => resolve(user))
-      .catch((error) => reject(error))
-  })
-}
+      .catch((error) => reject(error));
+  });
+};
 
-const signUpWithCometChat = async (UID) => {
-  const authKey = COMETCHAT_CONSTANTS.AUTH_KEY
-  const user = new CometChat.User(UID)
+const signUpWithCometChat = async () => {
+  const authKey = CONSTANTS.Auth_Key;
+  const UID = getGlobalState("connectedAccount");
+  const user = new CometChat.User(UID);
 
-  user.setName(UID)
+  user.setName(UID);
   return new Promise(async (resolve, reject) => {
     await CometChat.createUser(user, authKey)
       .then((user) => resolve(user))
-      .catch((error) => reject(error))
-  })
-}
+      .catch((error) => reject(error));
+  });
+};
 
 const logOutWithCometChat = async () => {
   return new Promise(async (resolve, reject) => {
     await CometChat.logout()
-      .then(() => {
-        setGlobalState('currentUser', null)
-        resolve()
-      })
-      .catch(() => reject())
-  })
-}
+      .then(() => resolve())
+      .catch(() => reject());
+  });
+};
 
-const checkAuthState = async () => {
+const isUserLoggedIn = async () => {
   return new Promise(async (resolve, reject) => {
     await CometChat.getLoggedinUser()
-      .then((user) => {
-        setGlobalState('currentUser', user)
-        resolve(user)
-      })
-      .catch((error) => reject(error))
-  })
-}
+      .then((user) => resolve(user))
+      .catch((error) => reject(error));
+  });
+};
 
-const getMessages = async (GUID) => {
-  const limit = 30
+const getUser = async (UID) => {
+  return new Promise(async (resolve, reject) => {
+    await CometChat.getUser(UID)
+      .then((user) => resolve(user))
+      .catch((error) => reject(error));
+  });
+};
+
+const getMessages = async (UID) => {
+  const limit = 30;
   const messagesRequest = new CometChat.MessagesRequestBuilder()
-    .setGUID(GUID)
+    .setUID(UID)
     .setLimit(limit)
-    .build()
+    .build();
 
   return new Promise(async (resolve, reject) => {
     await messagesRequest
       .fetchPrevious()
-      .then((messages) => resolve(messages.filter((msg) => msg.type == 'text')))
-      .catch((error) => reject(error))
-  })
-}
-
-const getConversations = async () => {
-  const limit = 30
-  const conversationsRequest = new CometChat.ConversationsRequestBuilder()
-    .setLimit(limit)
-    .build()
-
-  return new Promise(async (resolve, reject) => {
-    await conversationsRequest
-      .fetchNext()
-      .then((conversations) => resolve(conversations))
-      .catch((error) => reject(error))
-  })
-}
+      .then((messages) => resolve(messages.filter((msg) => msg.type == "text")))
+      .catch((error) => reject(error));
+  });
+};
 
 const sendMessage = async (receiverID, messageText) => {
-  const receiverType = CometChat.RECEIVER_TYPE.GROUP
+  const receiverType = CometChat.RECEIVER_TYPE.USER;
   const textMessage = new CometChat.TextMessage(
     receiverID,
     messageText,
     receiverType
-  )
+  );
+
   return new Promise(async (resolve, reject) => {
     await CometChat.sendMessage(textMessage)
       .then((message) => resolve(message))
-      .catch((error) => reject(error))
-  })
-}
+      .catch((error) => reject(error));
+  });
+};
+
+const getConversations = async () => {
+  const limit = 30;
+  const conversationsRequest = new CometChat.ConversationsRequestBuilder()
+    .setLimit(limit)
+    .build();
+
+  return new Promise(async (resolve, reject) => {
+    await conversationsRequest
+      .fetchNext()
+      .then((conversationList) => resolve(conversationList))
+      .catch((error) => reject(error));
+  });
+};
 
 const listenForMessage = async (listenerID) => {
   return new Promise(async (resolve, reject) => {
@@ -115,40 +120,9 @@ const listenForMessage = async (listenerID) => {
       new CometChat.MessageListener({
         onTextMessageReceived: (message) => resolve(message),
       })
-    )
-  })
-}
-
-const createNewGroup = async (GUID, groupName) => {
-  const groupType = CometChat.GROUP_TYPE.PUBLIC
-  const password = ''
-  const group = new CometChat.Group(GUID, groupName, groupType, password)
-
-  return new Promise(async (resolve, reject) => {
-    await CometChat.createGroup(group)
-      .then((group) => resolve(group))
-      .catch((error) => reject(error))
-  })
-}
-
-const getGroup = async (GUID) => {
-  return new Promise(async (resolve, reject) => {
-    await CometChat.getGroup(GUID)
-      .then((group) => resolve(group))
-      .catch((error) => reject(error))
-  })
-}
-
-const joinGroup = async (GUID) => {
-  const groupType = CometChat.GROUP_TYPE.PUBLIC
-  const password = ''
-
-  return new Promise(async (resolve, reject) => {
-    await CometChat.joinGroup(GUID, groupType, password)
-      .then((group) => resolve(group))
-      .catch((error) => reject(error))
-  })
-}
+    );
+  });
+};
 
 export {
   initCometChat,
@@ -157,10 +131,8 @@ export {
   logOutWithCometChat,
   getMessages,
   sendMessage,
-  checkAuthState,
-  listenForMessage,
   getConversations,
-  createNewGroup,
-  getGroup,
-  joinGroup,
-}
+  isUserLoggedIn,
+  getUser,
+  listenForMessage,
+};

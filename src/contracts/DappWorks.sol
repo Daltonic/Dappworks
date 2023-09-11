@@ -45,7 +45,6 @@ contract DappWorks is Ownable, ReentrancyGuard {
 
     mapping(uint => bool) jobListingExists;
     mapping(uint => mapping(address => bool)) public hasPlacedBid;
-    mapping(uint => bool) public isBidAccepted;
 
 
     modifier onlyJobOwner(uint id) {
@@ -147,7 +146,6 @@ contract DappWorks is Ownable, ReentrancyGuard {
         }
 
         jobListings[jId].listed = false;
-        isBidAccepted[jId] = true;
     }
 
     function bidStatus(uint id) public view returns (bool) {
@@ -207,13 +205,10 @@ contract DappWorks is Ownable, ReentrancyGuard {
     function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
         require(jobListingExists[id], "This job listing doesn't exist");
 
-        // Check if a bid has been accepted for this job listing
-        if (isBidAccepted[id]) {
-        // If a bid has been accepted, return an empty array to indicate the job is taken
-        Bidders = new BidStruct[](0);
+        if (jobListings[id].listed) {
+          Bidders = new BidStruct[](0);
         } else {
-        // If no bid has been accepted, return the list of bidders
-        Bidders = jobBidders[id];
+          Bidders = jobBidders[id];
         }
 
         return Bidders;
@@ -278,6 +273,46 @@ contract DappWorks is Ownable, ReentrancyGuard {
     function getJob(uint id) public view returns (JobStruct memory) {
         return jobListings[id];
     }
+
+    function getAssignedJobs(address account) public view returns (JobStruct[] memory AssignedJobs) {
+        uint available;
+        uint currentIndex = 0;
+
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && !jobListings[i].listed && !jobListings[i].paidOut) {
+                for (uint j = 0; j < freelancers[i].length; j++) {
+                    if (freelancers[i][j].account == account && freelancers[i][j].isAssigned) {
+                        available++;
+                    }
+                }
+            }
+        }
+
+        AssignedJobs = new JobStruct[](available);
+
+        for (uint256 i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && !jobListings[i].listed && !jobListings[i].paidOut) {
+                for (uint j = 0; j < freelancers[i].length; j++) {
+                    if (freelancers[i][j].account == account && freelancers[i][j].isAssigned) {
+                        AssignedJobs[currentIndex++] = jobListings[i];
+                    }
+                }
+            }
+        }
+
+        return AssignedJobs;
+    }
+
+    function getBidsForBidder(uint id, address bidder) public view returns (BidStruct[] memory Bids) {
+        Bids = new BidStruct[](0);
+
+        if (jobListingExists[id] && !jobListings[id].listed && !jobListings[id].paidOut && hasPlacedBid[id][bidder]) {
+            Bids = jobBidders[id];
+        }
+
+        return Bids;
+    }
+
 
     // private function
 
