@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { getBidders } from '../services/blockchain'
+import { getBidders, getJob } from '../services/blockchain'
 import { useParams } from 'react-router-dom'
 import { useGlobalState } from '../store'
 import { ApplicantsCard, Header } from "../components";
@@ -7,10 +7,12 @@ import { ApplicantsCard, Header } from "../components";
 const ViewBidders = () => {
   const { id } = useParams()
   const [bidders] = useGlobalState('bidders')
+  const [job] = useGlobalState('job')
 
   useEffect(()=> {
     const fetchBidders = async ()=> {
        await getBidders(id)
+       await getJob(id)
     }
 
     fetchBidders()
@@ -21,15 +23,13 @@ const ViewBidders = () => {
       <Header />
       <div className="px-20 mt-20">
         <h2 className="text-2xl my-3 px-3">
-          {bidders.length > 0 ? "Applicants" : "No Applicants yet."}
+          {bidders.length > 0 ? "Applicants" : !job?.listed ? 'Position filled' : "No Applicants yet."}
         </h2>
-        {
-            bidders.length > 0 
-            ? bidders.map((bidder, i)=>(
-                <ApplicantsCard key={i} bidder={bidder}/>
+        {bidders.length > 0
+          ? bidders.map((bidder, i) => (
+              <ApplicantsCard key={i} bidder={bidder} />
             ))
-            : null
-        }
+          : null}
       </div>
     </div>
   );

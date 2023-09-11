@@ -13,7 +13,7 @@ const Header = () => {
           Dappworks
         </Link>
         <div className="flex items-center space-x-5">
-          <span className="text-gray-600">My jobs</span>
+          <span className="text-gray-600">My Bids & Jobs</span>
           <Link to={"/myprojects"} className="text-gray-600">
             My Projects
           </Link>

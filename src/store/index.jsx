@@ -6,6 +6,8 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   createModal: 'scale-0',
   updateModal: 'scale-0',
   deleteModal: 'scale-0',
+  payoutModal: 'scale-0',
+  chatAuthModal: 'scale-0',
   jobs: [],
   jobListing: null,
   myjobs:[],

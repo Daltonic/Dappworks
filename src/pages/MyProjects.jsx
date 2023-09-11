@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react'
-import { Header, JobListingOwnerActions } from '../components'
+import { 
+  ChatAuth, 
+  DeleteJob, 
+  Header, 
+  JobListingOwnerActions, 
+  Payout, 
+  UpdateJob 
+} from '../components'
 import { getMyJobs } from '../services/blockchain'
 import { useGlobalState } from '../store'
-import UpdateJob from '../components/UpdateJob'
-import DeleteJob from '../components/DeleteJob'
 
 const MyProjects = () => {
   const [myjobs] = useGlobalState('myjobs')
@@ -14,14 +19,14 @@ const MyProjects = () => {
     const fetchData = async ()=> {
       await getMyJobs()
     }
-    
+
     fetchData()
   },[])
 
   return (
     <div>
       <Header />
-      <div className='px-5 mt-7'>
+      <div className='px-5 my-7'>
         {
           myjobs.length > 0
           ? myjobs.map((myjob,i) => (
@@ -35,6 +40,8 @@ const MyProjects = () => {
           <>
            <UpdateJob />
            <DeleteJob />
+           <Payout />
+           <ChatAuth />
           </>
         )}
       </div>
