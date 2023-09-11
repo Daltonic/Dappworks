@@ -36,7 +36,8 @@ const CreateJob = () => {
     const handleSubmit = async (e)=> {
         e.preventDefault()
 
-        if(jobTitle == '' && prize == '' && skills.length != 3 && description == '') return
+        if(jobTitle == '' || prize == '' || skills.length < 3 || description == '') return
+
         const params = {
           jobTitle,
           description,

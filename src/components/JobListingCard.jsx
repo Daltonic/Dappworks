@@ -3,10 +3,13 @@ import { FaEthereum } from 'react-icons/fa';
 import { bidForJob, bidStatus } from "../services/blockchain";
 import { toast } from 'react-toastify';
 import { useGlobalState } from '../store';
+import { useNavigate } from 'react-router-dom';
 
 const JobListingCard = ({ jobListing }) => {
   const [connectedAccount] = useGlobalState("connectedAccount");
   const [status] = useGlobalState('status')
+  const navigate = useNavigate();
+
 
   const handleBidding = async (id) => {
     await toast.promise(
@@ -24,6 +27,10 @@ const JobListingCard = ({ jobListing }) => {
             error: "Encountered error 🤯",
       }
     );
+  }
+
+  const manageAdminTasks = () => {
+    navigate('/myprojects')
   };
 
   return (
@@ -55,12 +62,15 @@ const JobListingCard = ({ jobListing }) => {
           Your request is pending
         </button>
       ) : (
-        <button className="mt-5 text-sm bg-green-400 px-3 py-2 rounded-sm text-white">
+        <button
+          onClick={manageAdminTasks}
+          className="mt-5 text-sm bg-green-400 px-3 py-2 rounded-sm text-white"
+        >
           Manage
         </button>
       )}
     </div>
-  )
+  );
 }
 
 export default JobListingCard

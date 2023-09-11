@@ -9,11 +9,12 @@ const MyProjects = () => {
   const [myjobs] = useGlobalState('myjobs')
   const [connectedAccount] = useGlobalState('connectedAccount')
 
-  const fetchData = async ()=> {
-    await getMyJobs()
-  }
-
+  
   useEffect(()=> {
+    const fetchData = async ()=> {
+      await getMyJobs()
+    }
+    
     fetchData()
   },[])
 

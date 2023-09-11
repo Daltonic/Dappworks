@@ -1,25 +1,28 @@
 import { Routes, Route } from 'react-router-dom'
-import { Home, JobListing } from './pages'
+import { Home, JobListing, MyProjects, Chats, ViewBidders } from "./pages";
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
 import { isWalletConnected, getJobs } from './services/blockchain'
-import MyProjects from './pages/MyProjects'
 
 const App = () => {
-  const fetchData = async ()=> {
-    await isWalletConnected()
-    await getJobs()
-  }
-
+  
   useEffect(()=> {
+    const fetchData = async ()=> {
+      await isWalletConnected()
+      await getJobs()
+    }
+    
     fetchData()
-  })
+  },[])
+  
   return (
     <div className="min-h-screen font-[poppins]">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/joblisting/:id" element={<JobListing />} />
-        <Route path='/myprojects' element={<MyProjects />}/>
+        <Route path="/myprojects" element={<MyProjects />} />
+        <Route path="/viewbidders/:id" element={<ViewBidders />} />
+        <Route path="/chats/:id" element={<Chats />} />
       </Routes>
 
       <ToastContainer
