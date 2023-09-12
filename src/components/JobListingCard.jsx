@@ -5,11 +5,19 @@ import { toast } from 'react-toastify';
 import { useGlobalState } from '../store';
 import { useNavigate } from 'react-router-dom';
 
+
 const JobListingCard = ({ jobListing }) => {
   const [connectedAccount] = useGlobalState("connectedAccount");
   const [status] = useGlobalState('status')
   const navigate = useNavigate();
 
+  const fetchStatus = async ()=> {
+    await bidStatus(jobListing?.id)
+
+  }
+  useEffect(()=>{
+    fetchStatus()
+  },[])
 
   const handleBidding = async (id) => {
     await toast.promise(

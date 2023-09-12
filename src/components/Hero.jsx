@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { FaPlus } from "react-icons/fa";
 import { useGlobalState, setGlobalState } from '../store';
 import JobListingCard  from './JobListingCard'
-import { bidStatus } from '../services/blockchain';
 
 
 const Hero = () => {

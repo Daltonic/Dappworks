@@ -11,6 +11,8 @@ const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
   jobs: [],
   jobListing: null,
   myjobs:[],
+  mygigs:[],
+  mybidjobs:[],
   job: null,
   bidders: [],
   freelancers: [],

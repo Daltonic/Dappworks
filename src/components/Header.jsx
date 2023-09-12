@@ -13,7 +13,12 @@ const Header = () => {
           Dappworks
         </Link>
         <div className="flex items-center space-x-5">
-          <span className="text-gray-600">My Bids & Jobs</span>
+          <Link to={"/mybids"} className="text-gray-600">
+            My Bids
+          </Link>
+          <Link to={"/myjobs"} className="text-gray-600">
+            My Jobs
+          </Link>
           <Link to={"/myprojects"} className="text-gray-600">
             My Projects
           </Link>

@@ -274,14 +274,14 @@ contract DappWorks is Ownable, ReentrancyGuard {
         return jobListings[id];
     }
 
-    function getAssignedJobs(address account) public view returns (JobStruct[] memory AssignedJobs) {
+    function getAssignedJobs() public view returns (JobStruct[] memory AssignedJobs) {
         uint available;
         uint currentIndex = 0;
 
         for (uint256 i = 1; i <= _jobCounter.current(); i++) {
-            if (jobListingExists[i] && !jobListings[i].listed && !jobListings[i].paidOut) {
+            if (jobListingExists[i] && jobListings[i].listed && !jobListings[i].paidOut) {
                 for (uint j = 0; j < freelancers[i].length; j++) {
-                    if (freelancers[i][j].account == account && freelancers[i][j].isAssigned) {
+                    if (freelancers[i][j].account == msg.sender && freelancers[i][j].isAssigned) {
                         available++;
                     }
                 }
@@ -293,7 +293,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         for (uint256 i = 1; i <= _jobCounter.current(); i++) {
             if (jobListingExists[i] && !jobListings[i].listed && !jobListings[i].paidOut) {
                 for (uint j = 0; j < freelancers[i].length; j++) {
-                    if (freelancers[i][j].account == account && freelancers[i][j].isAssigned) {
+                    if (freelancers[i][j].account == msg.sender && freelancers[i][j].isAssigned) {
                         AssignedJobs[currentIndex++] = jobListings[i];
                     }
                 }
@@ -303,16 +303,57 @@ contract DappWorks is Ownable, ReentrancyGuard {
         return AssignedJobs;
     }
 
-    function getBidsForBidder(uint id, address bidder) public view returns (BidStruct[] memory Bids) {
-        Bids = new BidStruct[](0);
+    function getBidsForBidder() public view returns (BidStruct[] memory Bids) {
 
-        if (jobListingExists[id] && !jobListings[id].listed && !jobListings[id].paidOut && hasPlacedBid[id][bidder]) {
-            Bids = jobBidders[id];
+            // Create a dynamic array to store the bids
+            BidStruct[] memory allBids = new BidStruct[](_jobCounter.current());
+            uint currentIndex = 0;
+
+            for (uint i = 1; i <= _jobCounter.current(); i++) {
+                if (jobListingExists[i] && jobListings[i].listed && !jobListings[i].paidOut) {
+                    if (hasPlacedBid[i][msg.sender]) {
+                    // Iterate over the bids for the current job and add matching bids to the array
+                    for (uint j = 0; j < jobBidders[i].length; j++) {
+                            if (jobBidders[i][j].account == msg.sender) {
+                                allBids[currentIndex] = jobBidders[i][j];
+                                currentIndex++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Create a new array with only the relevant bids
+            Bids = new BidStruct[](currentIndex);
+            for (uint k = 0; k < currentIndex; k++) {
+            Bids[k] = allBids[k];
         }
 
         return Bids;
     }
 
+    function getJobsForBidder() public view returns (JobStruct[] memory bidderJobs) {
+        // Create a dynamic array to store the jobs
+        JobStruct[] memory matchingJobs = new JobStruct[](_jobCounter.current());
+        uint currentIndex = 0;
+
+        for (uint i = 1; i <= _jobCounter.current(); i++) {
+            if (jobListingExists[i] && jobListings[i].listed && !jobListings[i].paidOut) {
+                if (hasPlacedBid[i][msg.sender]) {
+                    matchingJobs[currentIndex] = jobListings[i];
+                    currentIndex++;
+                }
+            }
+        }
+
+        // Create a new array with only the relevant jobs
+        bidderJobs = new JobStruct[](currentIndex);
+        for (uint k = 0; k < currentIndex; k++) {
+            bidderJobs[k] = matchingJobs[k];
+        }
+
+        return bidderJobs;
+    }
 
     // private function
 
