@@ -2,6 +2,7 @@ import Header from './Header'
 import Hero from './Hero'
 import CreateJob from './CreateJob'
 import JobListingCard from './JobListingCard'
+import JobBid from './JobBid'
 import JobListingOwnerActions from "./JobListingOwnerActions";
 import ApplicantsCard from './ApplicantsCard'
 import ChatAuth from "./ChatAuth";
@@ -23,4 +24,5 @@ export {
   Payout,
   UpdateJob,
   DeleteJob,
+  JobBid,
 };

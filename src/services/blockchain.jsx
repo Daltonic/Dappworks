@@ -277,6 +277,27 @@ const getMyJobs = async () => {
     reportError(err);
   }
 }
+const getMyGigs = async () => {
+  if (!ethereum) return alert("Please install Metamask");
+  try {
+    const contract = await getEthereumContract();
+    const jobs = await contract.getAssignedJobs();
+    setGlobalState("mygigs", structuredJobs(jobs));
+  } catch (err) {
+    reportError(err);
+  }
+}
+const getMyBidJobs = async () => {
+  if (!ethereum) return alert("Please install Metamask");
+  try {
+    const contract = await getEthereumContract();
+    const jobs = await contract.getJobsForBidder();
+    console.log(jobs)
+    setGlobalState("mybidjobs", structuredJobs(jobs));
+  } catch (err) {
+    reportError(err);
+  }
+}
 
 const getJob = async (id) => {
   if (!ethereum) return alert("Please install Metamask");
@@ -343,4 +364,6 @@ export {
   getJobs,
   getMyJobs,
   getJob,
+  getMyBidJobs,
+  getMyGigs,
 };
