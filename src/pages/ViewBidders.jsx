@@ -21,7 +21,7 @@ const ViewBidders = () => {
   return (
     <div>
       <Header />
-      <div className="px-20 mt-20">
+      <div className="px-20 max-sm:px-4 mt-20">
         <h2 className="text-2xl my-3 px-3">
           {bidders?.length > 0
             ? "Applicants"
