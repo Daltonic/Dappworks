@@ -7,6 +7,7 @@ import {
   ViewBidders,
   MyBids,
   MyJobs,
+  RecentConversations,
 } from "./pages";
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/viewbidders/:id" element={<ViewBidders />} />
         <Route path="/mybids" element={<MyBids />} />
         <Route path="/myjobs" element={<MyJobs />} />
+        <Route path="/recentconversations" element={<RecentConversations />} />
         <Route path="/chats/:id" element={<Chats />} />
       </Routes>
 

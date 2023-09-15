@@ -203,17 +203,13 @@ contract DappWorks is Ownable, ReentrancyGuard {
     }
 
     function getBidders(uint id) public view returns (BidStruct[] memory Bidders) {
-        require(jobListingExists[id], "This job listing doesn't exist");
-
-        if (jobListings[id].listed) {
-          Bidders = new BidStruct[](0);
+        if (jobListings[id].listed && jobListingExists[id]) {
+            Bidders = jobBidders[id];
         } else {
-          Bidders = jobBidders[id];
+            Bidders = new BidStruct[](0);
         }
-
-        return Bidders;
     }
-
+    
     function getFreelancers(uint id) public view returns (FreelancerStruct[] memory) {
         return freelancers[id];
     }

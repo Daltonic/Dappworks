@@ -31,9 +31,6 @@ const MyBids = () => {
             : null}
         </div>
       </div>
-      {mybidjobs && (
-        <ChatAuth />
-      )}
     </div>
   );
 }

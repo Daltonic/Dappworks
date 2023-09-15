@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { 
-  ChatAuth, 
   DeleteJob, 
   Header, 
   JobListingOwnerActions, 
@@ -41,7 +40,6 @@ const MyProjects = () => {
            <UpdateJob />
            <DeleteJob />
            <Payout />
-           <ChatAuth />
           </>
         )}
       </div>
