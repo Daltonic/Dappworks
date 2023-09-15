@@ -25,7 +25,7 @@ const RecentConversations = () => {
   }, []);
 
   return (
-    <div className="w-full sm:w-3/5 mx-auto mt-8">
+    <div className="w-full sm:w-3/5 mx-auto mt-8 px-3">
       <h1 className="text-2xl font-bold text-center">Your Recent chats</h1>
       {recentConversations?.length > 0
         ? recentConversations?.map((conversation, index) => (

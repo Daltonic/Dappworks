@@ -10,6 +10,7 @@ import UpdateJob from "./UpdateJob";
 import DeleteJob from "./DeleteJob";
 import Footer from './Footer'
 import ChatButton from './ChatButton'
+import MobileHeader from './MobileHeader'
 
 
 export {
@@ -24,4 +25,5 @@ export {
   UpdateJob,
   DeleteJob,
   JobBid,
+  MobileHeader,
 };

@@ -23,12 +23,14 @@ const ApplicantsCard = ({ bidder }) => {
   }
 
   return (
-    <div className="my-3 bg-white shadow-lg p-3 rounded-lg flex justify-between items-center border-[1px] border-gray-300">
+    <div className="my-3 bg-white shadow-lg p-3 rounded-lg flex justify-between items-center border-[1px] border-gray-300 flex-wrap">
       <h4>{truncate(bidder.account, 4, 4, 11)}</h4>
       <div className="flex items-center space-x-3">
-        <ChatButton 
-          label={'Message'} 
-          className={'flex items-center space-x-1 px-4 py-1 rounded-full bg-blue-500 text-white'} 
+        <ChatButton
+          label={"Message"}
+          className={
+            "flex items-center space-x-1 px-4 py-1 rounded-full bg-blue-500 text-white max-sm:text-sm"
+          }
           job={job}
           recipient={bidder.account}
         />
@@ -36,7 +38,7 @@ const ApplicantsCard = ({ bidder }) => {
           onClick={() =>
             handleAcceptingBid(bidder.id, bidder.jId, bidder.account)
           }
-          className="py-1 px-5 rounded-full bg-green-500 text-white"
+          className="py-1 px-5 rounded-full bg-green-500 text-white max-sm:text-sm"
         >
           Accept
         </button>
