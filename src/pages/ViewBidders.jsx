@@ -9,12 +9,12 @@ const ViewBidders = () => {
   const [bidders] = useGlobalState('bidders')
   const [job] = useGlobalState('job')
 
+  const fetchBidders = async ()=> {
+     await getBidders(id)
+     await getJob(id)
+  }
+  
   useEffect(()=> {
-    const fetchBidders = async ()=> {
-       await getBidders(id)
-       await getJob(id)
-    }
-
     fetchBidders()
   },[])
 
@@ -23,9 +23,13 @@ const ViewBidders = () => {
       <Header />
       <div className="px-20 mt-20">
         <h2 className="text-2xl my-3 px-3">
-          {bidders.length > 0 ? "Applicants" : !job?.listed ? 'Position filled' : "No Applicants yet."}
+          {bidders?.length > 0
+            ? "Applicants"
+            : !job?.listed
+            ? "Position filled"
+            : "No Applicants yet."}
         </h2>
-        {bidders.length > 0
+        {bidders?.length > 0
           ? bidders.map((bidder, i) => (
               <ApplicantsCard key={i} bidder={bidder} />
             ))

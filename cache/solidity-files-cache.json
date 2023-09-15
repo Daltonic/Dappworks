@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\DELL\\Desktop\\DAPPMENTORS\\DappWorks\\src\\contracts\\DappWorks.sol": {
-      "lastModificationDate": 1694527861378,
-      "contentHash": "bd4b19c727fba8051c08418a52919996",
+      "lastModificationDate": 1694586571432,
+      "contentHash": "716947427b38a190e797364f5bb1ab5b",
       "sourceName": "src/contracts/DappWorks.sol",
       "solcConfig": {
         "version": "0.8.11",

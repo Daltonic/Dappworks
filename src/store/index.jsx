@@ -1,24 +1,26 @@
 import { createGlobalState } from 'react-hooks-global-state'
 
 const { setGlobalState, useGlobalState, getGlobalState } = createGlobalState({
-  connectedAccount: '',
+  connectedAccount: "",
   currentUser: null,
-  createModal: 'scale-0',
-  updateModal: 'scale-0',
-  deleteModal: 'scale-0',
-  payoutModal: 'scale-0',
-  chatAuthModal: 'scale-0',
+  createModal: "scale-0",
+  updateModal: "scale-0",
+  deleteModal: "scale-0",
+  payoutModal: "scale-0",
+  chatAuthModal: "scale-0",
   jobs: [],
   jobListing: null,
-  myjobs:[],
-  mygigs:[],
-  mybidjobs:[],
+  myjobs: [],
+  mygigs: [],
+  mybidjobs: [],
   job: null,
   bidders: [],
   freelancers: [],
   freelancer: null,
   status: null,
-})
+  recentConversations: [],
+  messages: [],
+});
 
 const truncate = (text, startChars, endChars, maxLength) => {
   if (text.length > maxLength) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FaEthereum,
   FaPenAlt,
@@ -11,8 +11,18 @@ import { BsChatDotsFill } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { useGlobalState, setGlobalState } from "../store";
 import { useNavigate } from "react-router-dom";
+import ChatButton from "./ChatButton";
+import { getAcceptedFreelancer } from "../services/blockchain";
 
 const JobListingOwnerActions = ({ jobListing, editable }) => {
+  const getFreelancer = async ()=> {
+    await getAcceptedFreelancer(jobListing?.id);
+  }
+  useEffect(()=>{
+    getFreelancer()
+  },[])
+
+  const [freelancer] = useGlobalState("freelancer");
   const navigate = useNavigate()
 
   const openUpdateModal = ()=> {
@@ -30,9 +40,6 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
     setGlobalState("jobListing", jobListing);
   }
 
-  const handleChat = ()=> {
-    setGlobalState("chatAuthModal", "scale-100");
-  }
 
   const viewBidders = (id)=> {
     navigate(`/viewbidders/${id}`)
@@ -74,10 +81,6 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                   <FaTrashAlt />
                   <span className="text-sm">Delete</span>
                 </button>
-                <button className="flex items-center px-3 py-1 border-[1px] border-amber-500 text-amber-500 space-x-2 rounded-md">
-                  <FaExclamationCircle />
-                  <span className="text-sm">Dispute</span>
-                </button>
               </>
             )}
 
@@ -99,13 +102,14 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                   <FaMoneyBill />
                   <span className="text-sm">Pay</span>
                 </button>
-                <button
-                  onClick={handleChat}
-                  className="flex items-center px-3 py-1 border-[1px] bg-sky-600 text-white space-x-2 rounded-md"
-                >
-                  <BsChatDotsFill />
-                  <span className="text-sm">Chat freelancer</span>
-                </button>
+                <ChatButton
+                  label={"Chat freelancer"}
+                  className={
+                    "bg-white text-blue-700 py-2 px-4 rounded flex justify-start items-center space-x-1 hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-md shadow-black"
+                  }
+                  job={jobListing}
+                  recipient={freelancer?.account}
+                />
               </>
             )}
           </div>

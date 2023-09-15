@@ -46,7 +46,7 @@ const isWalletConnected = async () => {
       setGlobalState("connectedAccount", accounts[0]);
       await loadData();
       await isWalletConnected();
-      // await logOutWithCometChat();
+      await logOutWithCometChat();
     });
 
     if (accounts.length) {

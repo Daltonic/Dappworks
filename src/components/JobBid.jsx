@@ -2,11 +2,9 @@ import React from 'react'
 import { FaEthereum } from 'react-icons/fa';
 import { BsChatDotsFill } from "react-icons/bs";
 import { useGlobalState, setGlobalState } from "../store";
+import ChatButton from './ChatButton';
 
 const JobBid = ({ jobListing }) => {
-    const handleChat = ()=> {
-        setGlobalState('chatAuthModal', 'scale-100')
-    }
 
   return (
     <div className="border-t border-b border-l border-r border-gray-300 py-6 px-5">
@@ -26,13 +24,13 @@ const JobBid = ({ jobListing }) => {
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
       <div className="flex items-center mt-3">
-        <button
-          onClick={handleChat}
-          className="bg-blue-400 text-white px-4 py-1 flex space-x-2 items-center"
-        >
-          <BsChatDotsFill />
-          <span className="text-sm">chat owner</span>
-        </button>
+        <ChatButton
+          className={
+            "flex items-center space-x-1 px-4 py-1 rounded-full bg-blue-500 text-white"
+          }
+          label={"Chats"}
+          job={jobListing}
+        />
       </div>
     </div>
   );

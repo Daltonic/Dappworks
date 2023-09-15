@@ -13,8 +13,8 @@ const JobListingCard = ({ jobListing }) => {
 
   const fetchStatus = async ()=> {
     await bidStatus(jobListing?.id)
-
   }
+  
   useEffect(()=>{
     fetchStatus()
   },[])

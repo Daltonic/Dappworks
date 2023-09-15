@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Header, JobBid } from '../components'
+import {  Header, JobBid } from '../components'
 import { useGlobalState } from '../store'
 import { getMyGigs } from "../services/blockchain";
 

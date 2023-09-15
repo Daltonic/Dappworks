@@ -5,11 +5,11 @@ import JobListingCard from './JobListingCard'
 import JobBid from './JobBid'
 import JobListingOwnerActions from "./JobListingOwnerActions";
 import ApplicantsCard from './ApplicantsCard'
-import ChatAuth from "./ChatAuth";
 import Payout from "./Payout";
 import UpdateJob from "./UpdateJob";
 import DeleteJob from "./DeleteJob";
 import Footer from './Footer'
+import ChatButton from './ChatButton'
 
 
 export {
@@ -20,7 +20,6 @@ export {
   JobListingOwnerActions,
   Footer,
   ApplicantsCard,
-  ChatAuth,
   Payout,
   UpdateJob,
   DeleteJob,

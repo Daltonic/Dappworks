@@ -51,3 +51,4 @@
       expect(result.paidOut).to.be.true
     })
   })
+
