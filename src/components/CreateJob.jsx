@@ -6,63 +6,64 @@ import { toast } from 'react-toastify'
 
 const CreateJob = () => {
   const [createModal] = useGlobalState('createModal')
-  const [jobTitle, setJobTitle] = useState("")
-  const [prize, setPrize] = useState("")
-  const [description, setDescription] = useState("")
-  const [skill, setSkill] = useState("")
+  const [jobTitle, setJobTitle] = useState('')
+  const [prize, setPrize] = useState('')
+  const [description, setDescription] = useState('')
+  const [skill, setSkill] = useState('')
   const [skills, setSkills] = useState([])
 
-    const addSkills = () => {
-      if (skills.length != 5) {
-        setSkills((prevState) => [...prevState, skill]);
-      }
-      setSkill("");
-    };
-
-    const removeSkill = (index) => {
-      skills.splice(index, 1);
-      setSkills(() => [...skills]);
-    };
-
-    const closeModal = () => {
-      setGlobalState("createModal", "scale-0");
-      setJobTitle('')
-      setPrize('')
-      setSkills([])
-      setSkill('')
-      setDescription('')
-    };
-
-    const handleSubmit = async (e)=> {
-        e.preventDefault()
-
-        if(jobTitle == '' || prize == '' || skills.length < 3 || description == '') return
-
-        const params = {
-          jobTitle,
-          description,
-          tags: skills.slice(0, 5).join(','),
-          description,
-          prize
-        }
-
-        await toast.promise(
-          new Promise(async (resolve, reject) => {
-            await addJobListing(params)
-              .then(async () => {
-                closeModal();
-                await getJobs();
-                resolve();
-              })
-              .catch(() => reject());
-          }),
-          {
-            pending: "Approve transaction...",
-            success: "job added successfully 👌",
-            error: "Encountered error 🤯",
-          }
-        );
+  const addSkills = () => {
+    if (skills.length != 5) {
+      setSkills((prevState) => [...prevState, skill])
     }
+    setSkill('')
+  }
+
+  const removeSkill = (index) => {
+    skills.splice(index, 1)
+    setSkills(() => [...skills])
+  }
+
+  const closeModal = () => {
+    setGlobalState('createModal', 'scale-0')
+    setJobTitle('')
+    setPrize('')
+    setSkills([])
+    setSkill('')
+    setDescription('')
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (jobTitle == '' || prize == '' || skills.length < 3 || description == '')
+      return
+
+    const params = {
+      jobTitle,
+      description,
+      tags: skills.slice(0, 5).join(','),
+      description,
+      prize,
+    }
+
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await addJobListing(params)
+          .then(async () => {
+            closeModal()
+            await getJobs()
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'job added successfully 👌',
+        error: 'Encountered error 🤯',
+      }
+    )
+  }
 
   return (
     <div
@@ -89,6 +90,7 @@ const CreateJob = () => {
                   type="text"
                   className="rounded-md text-sm"
                   onChange={(e) => setJobTitle(e.target.value)}
+                  required
                 />
               </div>
 
@@ -102,6 +104,7 @@ const CreateJob = () => {
                   type="text"
                   className="rounded-md text-sm"
                   onChange={(e) => setPrize(e.target.value)}
+                  required
                 />
               </div>
 
@@ -112,9 +115,9 @@ const CreateJob = () => {
                   step={0.0001}
                   type="text"
                   value={skill}
-                  onChange={(e) => setSkill(e.target.value)}
                   className="rounded-md text-sm"
-                  placeholder="maximum of 5 skills"
+                  placeholder="Range (3 - 5) skills"
+                  onChange={(e) => setSkill(e.target.value)}
                 />
                 {skills.length != 5 ? (
                   <span
@@ -154,6 +157,7 @@ const CreateJob = () => {
                   placeholder="write something beautiful..."
                   className="rounded-b-md focus:outline-none focus:ring-0 text-sm"
                   onChange={(e) => setDescription(e.target.value)}
+                  required
                 ></textarea>
               </div>
               <div>
@@ -166,7 +170,7 @@ const CreateJob = () => {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default CreateJob

@@ -8,22 +8,26 @@ import {
   MyBids,
   MyJobs,
   RecentConversations,
-} from "./pages";
+} from './pages'
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
-import { isWalletConnected, getJobs } from './services/blockchain'
+import { isWalletConnected, loadData } from './services/blockchain'
+import { setGlobalState } from './store'
+import { isUserLoggedIn } from './services/chat'
 
 const App = () => {
-  
-  useEffect(()=> {
-    const fetchData = async ()=> {
+  useEffect(() => {
+    const fetchData = async () => {
       await isWalletConnected()
-      await getJobs()
+      await loadData()
+      isUserLoggedIn().then((user) => {
+        setGlobalState('currentUser', JSON.parse(JSON.stringify(user)))
+      })
     }
-    
+
     fetchData()
-  },[])
-  
+  }, [])
+
   return (
     <div className="min-h-screen font-[poppins]">
       <Routes>
@@ -33,7 +37,7 @@ const App = () => {
         <Route path="/viewbidders/:id" element={<ViewBidders />} />
         <Route path="/mybids" element={<MyBids />} />
         <Route path="/myjobs" element={<MyJobs />} />
-        <Route path="/recentconversations" element={<RecentConversations />} />
+        <Route path="/messages" element={<RecentConversations />} />
         <Route path="/chats/:id" element={<Chats />} />
       </Routes>
 
@@ -50,7 +54,7 @@ const App = () => {
         theme="dark"
       />
     </div>
-  );
+  )
 }
 
 export default App

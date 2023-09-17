@@ -1,83 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { setGlobalState, truncate, useGlobalState } from "../store";
-import { FaTimes } from "react-icons/fa";
-import { getMyJobs, updateJob } from "../services/blockchain";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from 'react'
+import { setGlobalState, truncate, useGlobalState } from '../store'
+import { FaTimes } from 'react-icons/fa'
+import { getMyJobs, updateJob } from '../services/blockchain'
+import { toast } from 'react-toastify'
 
 const UpdateJob = () => {
   const [jobListing] = useGlobalState('jobListing')
-  const [jobTitle, setJobTitle] = useState("");
-  const [prize, setPrize] = useState("");
-  const [description, setDescription] = useState("");
-  const [skill, setSkill] = useState("");
-  const [skills, setSkills] = useState([]);
-  const [updateModal] = useGlobalState("updateModal");
-
+  const [jobTitle, setJobTitle] = useState('')
+  const [prize, setPrize] = useState('')
+  const [description, setDescription] = useState('')
+  const [skill, setSkill] = useState('')
+  const [skills, setSkills] = useState([])
+  const [updateModal] = useGlobalState('updateModal')
 
   useEffect(() => {
-    setJobTitle(jobListing?.jobTitle);
+    setJobTitle(jobListing?.jobTitle)
     setPrize(jobListing?.prize)
     setDescription(jobListing?.description)
     setSkills(jobListing?.tags)
-  }, [jobListing]);
+  }, [jobListing])
 
   const addSkills = () => {
     if (skills.length != 5) {
-      setSkills((prevState) => [...prevState, skill]);
+      setSkills((prevState) => [...prevState, skill])
     }
-    setSkill("");
-  };
+    setSkill('')
+  }
 
   const removeSkill = (index) => {
-    skills.splice(index, 1);
-    setSkills(() => [...skills]);
-  };
+    skills.splice(index, 1)
+    setSkills(() => [...skills])
+  }
 
   const closeModal = () => {
-    setGlobalState("updateModal", "scale-0");
-    setJobTitle('');
-    setPrize('');
-    setDescription('');
+    setGlobalState('updateModal', 'scale-0')
+    setJobTitle('')
+    setPrize('')
+    setDescription('')
 
     setGlobalState('jobListing', null)
-  };
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (
-      jobTitle == "" ||
-      prize == "" ||
-      skills.length < 3 ||
-      description == ""
-    )
-      return;
+    if (jobTitle == '' || prize == '' || skills.length < 3 || description == '')
+      return
     const params = {
       id: jobListing.id,
       jobTitle,
       description,
-      tags: skills.slice(0, 5).join(","),
+      tags: skills.slice(0, 5).join(','),
       description,
       prize,
-    };
+    }
 
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await updateJob(params)
           .then(async () => {
-            closeModal();
-            await getMyJobs();
-            resolve();
+            closeModal()
+            await getMyJobs()
+            resolve()
           })
-          .catch(() => reject());
+          .catch(() => reject())
       }),
       {
-        pending: "Approve transaction...",
-        success: "job updated successfully 👌",
-        error: "Encountered error 🤯",
+        pending: 'Approve transaction...',
+        success: 'job updated successfully 👌',
+        error: 'Encountered error 🤯',
       }
-    );
-  };
+    )
+  }
 
   return (
     <div
@@ -104,6 +98,7 @@ const UpdateJob = () => {
                   type="text"
                   className="rounded-md text-sm"
                   onChange={(e) => setJobTitle(e.target.value)}
+                  required
                 />
               </div>
 
@@ -115,8 +110,10 @@ const UpdateJob = () => {
                   placeholder="eg. 0.04"
                   step={0.0001}
                   type="text"
-                  className="rounded-md text-sm"
+                  className="rounded-md text-sm bg-gray-200"
                   onChange={(e) => setPrize(e.target.value)}
+                  disabled
+                  readOnly
                 />
               </div>
 
@@ -128,7 +125,7 @@ const UpdateJob = () => {
                   type="text"
                   value={skill}
                   className="rounded-md text-sm"
-                  placeholder="maximum of 5 skills required"
+                  placeholder="Range (3 - 5) skills"
                   onChange={(e) => setSkill(e.target.value)}
                 />
                 {skills?.length != 5 ? (
@@ -146,7 +143,7 @@ const UpdateJob = () => {
                     key={i}
                     className="p-2 rounded-full text-gray-500 bg-gray-200 font-semibold
                 flex items-center w-max cursor-pointer active:bg-gray-300
-                transition duration-300 ease space-x-2 text-xs"
+                transition duration-300 ease space-x-2 text-xs mr-2 mt-2"
                   >
                     <span>{truncate(skill, 4, 4, 11)}</span>
                     <button
@@ -181,7 +178,7 @@ const UpdateJob = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UpdateJob;
+export default UpdateJob

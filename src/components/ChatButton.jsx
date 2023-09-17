@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { MdOutlineChat } from "react-icons/md";
-import { FiLogIn } from "react-icons/fi";
-import { FiUsers } from "react-icons/fi";
-import { AiFillLock } from "react-icons/ai";
-import { Menu } from "@headlessui/react";
-import { toast } from "react-toastify";
-import {
-  loginWithCometChat,
-  signUpWithCometChat,
-} from '../services/chat'
+import { MdOutlineChat } from 'react-icons/md'
+import { FiLogIn } from 'react-icons/fi'
+import { FiUsers } from 'react-icons/fi'
+import { AiFillLock } from 'react-icons/ai'
+import { Menu } from '@headlessui/react'
+import { toast } from 'react-toastify'
+import { loginWithCometChat, signUpWithCometChat } from '../services/chat'
 import { setGlobalState, useGlobalState } from '../store'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 
-
-const ChatButton = ({ label, className, recipient, job }) => {
+const ChatButton = ({ job }) => {
   const [connectedAccount] = useGlobalState('connectedAccount')
   const [currentUser] = useGlobalState('currentUser')
 
@@ -25,55 +20,50 @@ const ChatButton = ({ label, className, recipient, job }) => {
         await signUpWithCometChat(connectedAccount)
           .then((user) => resolve(user))
           .catch((error) => {
-            alert(JSON.stringify(error));
-            reject(error);
-          });
+            alert(JSON.stringify(error))
+            reject(error)
+          })
       }),
       {
-        pending: "Signing up...",
-        success: "Signed up successfully, please login 👌",
-        error: "Encountered error 🤯",
+        pending: 'Signing up...',
+        success: 'Signed up successfully, please login 👌',
+        error: 'Encountered error 🤯',
       }
-    );
-  };
-
-  console.log(job?.owner+connectedAccount)
+    )
+  }
 
   const handleLogin = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await loginWithCometChat(connectedAccount)
           .then((user) => {
-            setGlobalState("currentUser", user);
-            resolve(user);
+            setGlobalState('currentUser', user)
+            resolve(user)
           })
           .catch((error) => {
-            alert(JSON.stringify(error));
-            reject(error);
-          });
+            alert(JSON.stringify(error))
+            reject(error)
+          })
       }),
       {
-        pending: "Logging...",
-        success: "Logged in successfully 👌",
-        error: "Encountered error 🤯",
+        pending: 'Logging...',
+        success: 'Logged in successfully 👌',
+        error: 'Encountered error 🤯',
       }
-    );
+    )
   }
 
-  
-  const handleChat = ()=> {
-     navigate(`/chats/${recipient}`); 
-  }
-
-  const recentChats = ()=> {
+  const recentChats = () => {
     navigate('/recentconversations')
   }
 
-
   return (
     <Menu className="relative" as="div">
-      <Menu.Button className={className} as="button">
-        <MdOutlineChat size={20} /> <span>{label}</span>
+      <Menu.Button
+        className="flex items-center space-x-1 px-4 py-1 rounded-full bg-blue-500 text-white"
+        as="button"
+      >
+        <MdOutlineChat size={20} /> <span>Authentication First</span>
       </Menu.Button>
 
       <Menu.Items
@@ -81,13 +71,15 @@ const ChatButton = ({ label, className, recipient, job }) => {
           divide-y divide-gray-100 rounded-md bg-white shadow-lg shadow-black
           ing-1 ring-black ring-opacity-5 focus:outline-none"
       >
-        {currentUser && currentUser.status != "offline" && connectedAccount != job?.owner ? (
+        {currentUser &&
+        currentUser.status != 'offline' &&
+        connectedAccount != job?.owner ? (
           <>
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={`flex justify-start items-center space-x-1 ${
-                    active ? "bg-gray-200 text-black" : "text-gray-900"
+                    active ? 'bg-gray-200 text-black' : 'text-gray-900'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={recentChats}
                 >
@@ -97,13 +89,15 @@ const ChatButton = ({ label, className, recipient, job }) => {
               )}
             </Menu.Item>
           </>
-        ) : currentUser && currentUser.status != "offline" && connectedAccount == job?.owner ? (
+        ) : currentUser &&
+          currentUser.status != 'offline' &&
+          connectedAccount == job?.owner ? (
           <>
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={`flex justify-start items-center space-x-1 ${
-                    active ? "bg-gray-200 text-black" : "text-gray-900"
+                    active ? 'bg-gray-200 text-black' : 'text-gray-900'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={handleChat}
                 >
@@ -119,7 +113,7 @@ const ChatButton = ({ label, className, recipient, job }) => {
               {({ active }) => (
                 <button
                   className={`flex justify-start items-center space-x-1 ${
-                    active ? "bg-gray-200 text-black" : "text-blue-500"
+                    active ? 'bg-gray-200 text-black' : 'text-blue-500'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={handleSignUp}
                 >
@@ -132,7 +126,7 @@ const ChatButton = ({ label, className, recipient, job }) => {
               {({ active }) => (
                 <button
                   className={`flex justify-start items-center space-x-1 ${
-                    active ? "bg-gray-200 text-black" : "text-gray-900"
+                    active ? 'bg-gray-200 text-black' : 'text-gray-900'
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={handleLogin}
                 >
@@ -145,7 +139,7 @@ const ChatButton = ({ label, className, recipient, job }) => {
         )}
       </Menu.Items>
     </Menu>
-  );
-};
+  )
+}
 
-export default ChatButton;
+export default ChatButton
