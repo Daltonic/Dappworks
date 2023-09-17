@@ -2,7 +2,7 @@ import { setGlobalState } from "../store";
 import abi from "../abis/src/contracts/DappWorks.sol/DappWorks.json";
 import address from "../abis/contractAddress.json";
 import { ethers } from "ethers";
-import { logOutWithCometChat } from "./Chat";
+import { logOutWithCometChat } from "./chat";
 
 const { ethereum } = window;
 const ContractAddress = address.address;

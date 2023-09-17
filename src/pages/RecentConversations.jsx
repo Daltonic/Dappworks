@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getConversations } from "../services/Chat";
+import { getConversations } from "../services/chat";
 import { useNavigate, Link } from "react-router-dom";
 import { setGlobalState, useGlobalState, truncate } from "../store";
 import Identicon from "react-identicons";

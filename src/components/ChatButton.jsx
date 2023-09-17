@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import {
   loginWithCometChat,
   signUpWithCometChat,
-} from '../services/Chat'
+} from '../services/chat'
 import { setGlobalState, useGlobalState } from '../store'
 import { useNavigate } from "react-router-dom";
 

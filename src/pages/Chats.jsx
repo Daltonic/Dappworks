@@ -7,7 +7,7 @@ import {
   sendMessage,
   listenForMessage,
   isUserLoggedIn,
-} from "../services/Chat";
+} from "../services/chat";
 import { toast } from "react-toastify";
 
 const Chats = () => {
