@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaEthereum } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 const JobBid = ({ jobListing }) => {
   return (
@@ -19,6 +20,14 @@ const JobBid = ({ jobListing }) => {
           : null}
       </div>
       <p className="pr-7 mt-5 text-sm">{jobListing.description}</p>
+      <div className='flex mt-5'>
+        <Link
+          to={`/chats/${jobListing.owner}`}
+          className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
+        >
+          <span className="text-sm">Chat with freelancer</span>
+        </Link>
+      </div>
     </div>
   )
 }

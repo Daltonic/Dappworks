@@ -1,21 +1,16 @@
 import React from 'react'
-import { truncate, useGlobalState } from '../store'
-import { acceptBid, getBidders } from '../services/blockchain'
+import { truncate } from '../store'
+import { acceptBid } from '../services/blockchain'
 import { toast } from 'react-toastify'
 import { MdOutlineChat } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
 const ApplicantsCard = ({ bidder }) => {
-  const [job] = useGlobalState('job')
-
   const handleAcceptingBid = async (bid, jid, account) => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await acceptBid(bid, jid, account)
-          .then(async () => {
-            await getBidders(jid)
-            resolve()
-          })
+          .then(async () => resolve())
           .catch(() => reject())
       }),
       {

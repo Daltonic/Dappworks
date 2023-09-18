@@ -68,8 +68,14 @@ describe('Contracts', () => {
 
       it('should confirm accepting job bid', async ()=> {
         await contract.connect(freelancer1).bidForJob(id);
+        result = await contract.connect(freelancer1).getAssignedJobs()
+        expect(result).to.have.lengthOf(0)
 
         await contract.connect(client1).acceptBid(0, id, freelancer1.address)
+
+        result = await contract.connect(freelancer1).getAssignedJobs()
+        expect(result).to.have.lengthOf(1)
+
         result = await contract.connect(client1).getFreelancers(id);
         expect(result).to.have.lengthOf(1)
       })

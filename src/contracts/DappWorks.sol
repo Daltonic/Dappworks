@@ -14,7 +14,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
     struct JobStruct {
         uint id;
         address owner;
-        address freelanceer;
+        address freelancer;
         string jobTitle;
         string description;
         string tags;
@@ -140,7 +140,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         freelancer.isAssigned = true;
 
         freelancers[jId].push(freelancer);
-        jobListings[jId].freelanceer = freelancer.account;
+        jobListings[jId].freelancer = bidder;
 
         for (uint i = 0; i < jobBidders[jId].length; i++) {
             if (jobBidders[jId][i].id != id) {
@@ -172,7 +172,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         FreelancerStruct storage freelancer = freelancers[jId][id];
 
         freelancer.isAssigned = false;
-        jobListings[jId].freelanceer = address(0);
+        jobListings[jId].freelancer = address(0);
         payTo(jobListings[jId].owner, jobListings[jId].prize);
 
         jobListings[jId].listed = true;
@@ -195,7 +195,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         uint reward = jobListings[id].prize;
         uint tax = (reward * platformCharge) / 100;
 
-        payTo(jobListings[id].freelanceer, reward - tax);
+        payTo(jobListings[id].freelancer, reward - tax);
         payTo(owner(), tax);
         jobListings[id].paidOut = true;
     }
@@ -288,41 +288,27 @@ contract DappWorks is Ownable, ReentrancyGuard {
         returns (JobStruct[] memory AssignedJobs)
     {
         uint available;
-        uint currentIndex = 0;
 
         for (uint256 i = 1; i <= _jobCounter.current(); i++) {
             if (
                 jobListingExists[i] &&
-                jobListings[i].listed &&
-                !jobListings[i].paidOut
+                !jobListings[i].paidOut &&
+                jobListings[i].freelancer == msg.sender
             ) {
-                for (uint j = 0; j < freelancers[i].length; j++) {
-                    if (
-                        freelancers[i][j].account == msg.sender &&
-                        freelancers[i][j].isAssigned
-                    ) {
-                        available++;
-                    }
-                }
+                available++;
             }
         }
 
         AssignedJobs = new JobStruct[](available);
 
+        uint currentIndex = 0;
         for (uint256 i = 1; i <= _jobCounter.current(); i++) {
             if (
                 jobListingExists[i] &&
-                !jobListings[i].listed &&
-                !jobListings[i].paidOut
+                !jobListings[i].paidOut &&
+                jobListings[i].freelancer == msg.sender
             ) {
-                for (uint j = 0; j < freelancers[i].length; j++) {
-                    if (
-                        freelancers[i][j].account == msg.sender &&
-                        freelancers[i][j].isAssigned
-                    ) {
-                        AssignedJobs[currentIndex++] = jobListings[i];
-                    }
-                }
+                AssignedJobs[currentIndex++] = jobListings[i];
             }
         }
 

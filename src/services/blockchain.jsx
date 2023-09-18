@@ -44,7 +44,7 @@ const isWalletConnected = async () => {
 
     window.ethereum.on('accountsChanged', async () => {
       setGlobalState('connectedAccount', accounts[0])
-      console.log('Account changed: ', accounts[0]);
+      console.log('Account changed: ', accounts[0])
       await loadData()
       await isWalletConnected()
       logOutWithCometChat()
@@ -150,7 +150,8 @@ const acceptBid = async (id, jId, bidder) => {
       tx = await contract.acceptBid(id, jId, bidder)
       await tx.wait()
 
-      await getJob(id)
+      await getJobs()
+      await getBidders(jId)
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -336,7 +337,7 @@ const structuredJobs = (jobs) =>
     .map((job) => ({
       id: job.id.toNumber(),
       owner: job.owner.toLowerCase(),
-      freelanceer: job.freelanceer.toLowerCase(),
+      freelancer: job.freelancer.toLowerCase(),
       jobTitle: job.jobTitle,
       description: job.description,
       tags: job.tags.split(','),

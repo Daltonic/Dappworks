@@ -77,6 +77,16 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                   <FaTrashAlt />
                   <span className="text-sm">Delete</span>
                 </button>
+
+                {jobListing.freelancer !=
+                  '0x0000000000000000000000000000000000000000' && (
+                  <Link
+                    to={`/chats/${jobListing.freelancer}`}
+                    className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
+                  >
+                    <span className="text-sm">Chat with freelancer</span>
+                  </Link>
+                )}
               </>
             )}
 
@@ -98,12 +108,15 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                   <FaMoneyBill />
                   <span className="text-sm">Pay</span>
                 </button>
-                <Link
-                  to={`/chats/${jobListing.freelanceer}`}
-                  className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
-                >
-                  <span className="text-sm">Chat with Freelancer</span>
-                </Link>
+                {jobListing.freelancer !=
+                  '0x0000000000000000000000000000000000000000' && (
+                  <Link
+                    to={`/chats/${jobListing.freelancer}`}
+                    className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
+                  >
+                    <span className="text-sm">Chat with freelancer</span>
+                  </Link>
+                )}
               </>
             )}
           </div>
