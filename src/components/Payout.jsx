@@ -2,7 +2,7 @@ import React from "react";
 import { useGlobalState, setGlobalState } from "../store";
 import { MdAttachMoney } from "react-icons/md";
 import { toast } from "react-toastify";
-import { getMyJobs, payout } from "../services/blockchain";
+import { payout } from "../services/blockchain";
 
 const Payout = () => {
   const [payoutModal] = useGlobalState("payoutModal");
@@ -19,7 +19,6 @@ const Payout = () => {
         await payout(jobListing.id)
           .then(async () => {
             closeModal();
-            await getMyJobs();
             resolve();
           })
           .catch(() => reject());

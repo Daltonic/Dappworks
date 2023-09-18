@@ -1,47 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react'
 import {
   FaEthereum,
   FaPenAlt,
   FaTrashAlt,
-  FaExclamationCircle,
   FaMoneyBill,
   FaArrowRight,
-} from "react-icons/fa";
-import { BsChatDotsFill } from "react-icons/bs";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { useGlobalState, setGlobalState } from "../store";
-import { useNavigate } from "react-router-dom";
-import ChatButton from "./ChatButton";
-import { getAcceptedFreelancer } from "../services/blockchain";
+} from 'react-icons/fa'
+import { IoMdCheckmarkCircleOutline } from 'react-icons/io'
+import { useGlobalState, setGlobalState } from '../store'
+import { Link, useNavigate } from 'react-router-dom'
+import { getAcceptedFreelancer } from '../services/blockchain'
 
 const JobListingOwnerActions = ({ jobListing, editable }) => {
-  const getFreelancer = async ()=> {
-    await getAcceptedFreelancer(jobListing?.id);
+  const getFreelancer = async () => {
+    await getAcceptedFreelancer(jobListing?.id)
   }
-  useEffect(()=>{
+  useEffect(() => {
     getFreelancer()
-  },[])
+  }, [])
 
-  const [freelancer] = useGlobalState("freelancer");
+  const [freelancer] = useGlobalState('freelancer')
   const navigate = useNavigate()
 
-  const openUpdateModal = ()=> {
+  const openUpdateModal = () => {
     setGlobalState('updateModal', 'scale-100')
-    setGlobalState("jobListing", jobListing);
+    setGlobalState('jobListing', jobListing)
   }
 
-  const openPayoutModal = ()=> {
+  const openPayoutModal = () => {
     setGlobalState('payoutModal', 'scale-100')
-    setGlobalState("jobListing", jobListing);
+    setGlobalState('jobListing', jobListing)
   }
 
-  const openDeleteModal = ()=> {
+  const openDeleteModal = () => {
     setGlobalState('deleteModal', 'scale-100')
-    setGlobalState("jobListing", jobListing);
+    setGlobalState('jobListing', jobListing)
   }
 
-
-  const viewBidders = (id)=> {
+  const viewBidders = (id) => {
     navigate(`/viewbidders/${id}`)
   }
 
@@ -102,14 +98,12 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
                   <FaMoneyBill />
                   <span className="text-sm">Pay</span>
                 </button>
-                <ChatButton
-                  label={"Chat freelancer"}
-                  className={
-                    "bg-white text-blue-700 py-2 px-4 rounded flex justify-start items-center space-x-1 hover:bg-blue-600 hover:text-white transition-all duration-300 shadow-md shadow-black"
-                  }
-                  job={jobListing}
-                  recipient={freelancer?.account}
-                />
+                <Link
+                  to={`/chats/${jobListing.freelanceer}`}
+                  className="flex items-center px-3 py-1 border-[1px] border-green-500 text-green-500 space-x-2 rounded-md"
+                >
+                  <span className="text-sm">Chat with Freelancer</span>
+                </Link>
               </>
             )}
           </div>
@@ -125,7 +119,7 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default JobListingOwnerActions;
+export default JobListingOwnerActions

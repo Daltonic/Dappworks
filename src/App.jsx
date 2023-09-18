@@ -11,22 +11,16 @@ import {
 } from './pages'
 import { ToastContainer } from 'react-toastify'
 import { useEffect } from 'react'
-import { isWalletConnected, loadData } from './services/blockchain'
-import { setGlobalState } from './store'
-import { isUserLoggedIn } from './services/chat'
+import { isWalletConnected } from './services/blockchain'
+import AuthenticatedRoutes from './utils/AuthenticatedRoutes'
+import Authenticate from './pages/Authenticate'
+import { useGlobalState } from './store'
 
 const App = () => {
+  const [connectedAccount] = useGlobalState('connectedAccount')
   useEffect(() => {
-    const fetchData = async () => {
-      await isWalletConnected()
-      await loadData()
-      isUserLoggedIn().then((user) => {
-        setGlobalState('currentUser', JSON.parse(JSON.stringify(user)))
-      })
-    }
-
-    fetchData()
-  }, [])
+    isWalletConnected()
+  }, [connectedAccount])
 
   return (
     <div className="min-h-screen font-[poppins]">
@@ -37,8 +31,12 @@ const App = () => {
         <Route path="/viewbidders/:id" element={<ViewBidders />} />
         <Route path="/mybids" element={<MyBids />} />
         <Route path="/myjobs" element={<MyJobs />} />
-        <Route path="/messages" element={<RecentConversations />} />
-        <Route path="/chats/:id" element={<Chats />} />
+        <Route path="/authenticate" element={<Authenticate />} />
+
+        <Route element={<AuthenticatedRoutes />}>
+          <Route path="/messages" element={<RecentConversations />} />
+          <Route path="/chats/:id" element={<Chats />} />
+        </Route>
       </Routes>
 
       <ToastContainer

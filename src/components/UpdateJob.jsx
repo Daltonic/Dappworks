@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { setGlobalState, truncate, useGlobalState } from '../store'
 import { FaTimes } from 'react-icons/fa'
-import { getMyJobs, updateJob } from '../services/blockchain'
+import { updateJob } from '../services/blockchain'
 import { toast } from 'react-toastify'
 
 const UpdateJob = () => {
@@ -60,7 +60,6 @@ const UpdateJob = () => {
         await updateJob(params)
           .then(async () => {
             closeModal()
-            await getMyJobs()
             resolve()
           })
           .catch(() => reject())

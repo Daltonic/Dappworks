@@ -4,25 +4,15 @@ import { Link } from 'react-router-dom'
 import { setGlobalState, useGlobalState, truncate } from '../store'
 import Identicon from 'react-identicons'
 import { Header } from '../components'
-import AuthChat from '../components/AuthChat'
 
 const RecentConversations = () => {
   const [recentConversations] = useGlobalState('recentConversations')
   const [currentUser] = useGlobalState('currentUser')
 
   useEffect(() => {
-    const returnConversations = async () => {
-      await getConversations().then((users) =>
-        setGlobalState('recentConversations', users)
-      )
-    }
-
-    if (currentUser) {
-      setGlobalState('chatAuthModal', 'scale-0')
-      returnConversations()
-    } else {
-      setGlobalState('chatAuthModal', 'scale-100')
-    }
+    getConversations().then((users) =>
+      setGlobalState('recentConversations', users)
+    )
   }, [currentUser])
 
   return (
@@ -46,10 +36,10 @@ const RecentConversations = () => {
             <p>{truncate(conversation.conversationWith.name, 4, 4, 11)}</p>
           </Link>
         ))}
-        <p className="text-center">you don't have any recent chats</p>
+        {recentConversations.length < 1 && (
+          <p className="text-center">you don't have any recent chats</p>
+        )}
       </div>
-
-      <AuthChat />
     </>
   )
 }

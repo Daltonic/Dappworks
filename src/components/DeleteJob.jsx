@@ -1,39 +1,36 @@
 import React from 'react'
-import { useGlobalState, setGlobalState } from '../store';
-import {
-  FaTrashAlt,
-} from "react-icons/fa";
-import { toast } from 'react-toastify';
-import { deleteJob, getMyJobs } from '../services/blockchain';
+import { useGlobalState, setGlobalState } from '../store'
+import { FaTrashAlt } from 'react-icons/fa'
+import { toast } from 'react-toastify'
+import { deleteJob } from '../services/blockchain'
 
 const DeleteJob = () => {
   const [deleteModal] = useGlobalState('deleteModal')
-  const [jobListing] = useGlobalState("jobListing");
+  const [jobListing] = useGlobalState('jobListing')
 
-  const closeModal = ()=> {
+  const closeModal = () => {
     setGlobalState('deleteModal', 'scale-0')
     setGlobalState('jobListing', null)
   }
 
-  const handleDelete = async ()=> {
+  const handleDelete = async () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await deleteJob(jobListing.id)
           .then(async () => {
-            closeModal();
-            await getMyJobs();
-            resolve();
+            closeModal()
+            resolve()
           })
-          .catch(() => reject());
+          .catch(() => reject())
       }),
       {
-        pending: "Approve transaction...",
-        success: "job deleted successfully 👌",
-        error: "Encountered error 🤯",
+        pending: 'Approve transaction...',
+        success: 'job deleted successfully 👌',
+        error: 'Encountered error 🤯',
       }
-    );
+    )
   }
-  
+
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center
@@ -67,7 +64,7 @@ const DeleteJob = () => {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default DeleteJob

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { setGlobalState, truncate, useGlobalState } from '../store'
 import { FaTimes } from 'react-icons/fa'
-import { addJobListing, getJobs } from '../services/blockchain'
+import { addJobListing } from '../services/blockchain'
 import { toast } from 'react-toastify'
 
 const CreateJob = () => {
@@ -50,10 +50,9 @@ const CreateJob = () => {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await addJobListing(params)
-          .then(async () => {
+          .then(async (tx) => {
             closeModal()
-            await getJobs()
-            resolve()
+            resolve(tx)
           })
           .catch(() => reject())
       }),

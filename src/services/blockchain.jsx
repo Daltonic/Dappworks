@@ -44,10 +44,12 @@ const isWalletConnected = async () => {
 
     window.ethereum.on('accountsChanged', async () => {
       setGlobalState('connectedAccount', accounts[0])
+      console.log('Account changed: ', accounts[0]);
       await loadData()
       await isWalletConnected()
-      await logOutWithCometChat()
+      logOutWithCometChat()
     })
+    await loadData()
 
     if (accounts.length) {
       setGlobalState('connectedAccount', accounts[0])
@@ -79,6 +81,8 @@ const addJobListing = async ({ jobTitle, description, tags, prize }) => {
         value: toWei(prize),
       })
       await tx.wait()
+
+      await getJobs()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -94,6 +98,8 @@ const updateJob = async ({ id, jobTitle, description, tags }) => {
       const contract = await getEthereumContract()
       tx = await contract.updateJob(id, jobTitle, description, tags)
       await tx.wait()
+
+      await getMyJobs()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -109,6 +115,8 @@ const deleteJob = async (id) => {
       const contract = await getEthereumContract()
       tx = await contract.deleteJob(id)
       await tx.wait()
+
+      await getMyJobs()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -124,6 +132,8 @@ const bidForJob = async (id) => {
       const contract = await getEthereumContract()
       tx = await contract.bidForJob(id)
       await tx.wait()
+
+      await getJobs()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -139,6 +149,8 @@ const acceptBid = async (id, jId, bidder) => {
       const contract = await getEthereumContract()
       tx = await contract.acceptBid(id, jId, bidder)
       await tx.wait()
+
+      await getJob(id)
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -154,6 +166,8 @@ const dispute = async (id) => {
       const contract = await getEthereumContract()
       tx = await contract.dispute(id)
       await tx.wait()
+
+      await getJob(id)
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -169,6 +183,8 @@ const resolved = async (id) => {
       const contract = await getEthereumContract()
       tx = await contract.resolved(id)
       await tx.wait()
+
+      await getJob(id)
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -184,6 +200,8 @@ const revoke = async (jId, id) => {
       const contract = await getEthereumContract()
       tx = await contract.revoke(jId, id)
       await tx.wait()
+
+      await getJob(id)
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -199,6 +217,8 @@ const payout = async (id) => {
       const contract = await getEthereumContract()
       tx = await contract.payout(id)
       await tx.wait()
+
+      await getMyJobs()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -316,6 +336,7 @@ const structuredJobs = (jobs) =>
     .map((job) => ({
       id: job.id.toNumber(),
       owner: job.owner.toLowerCase(),
+      freelanceer: job.freelanceer.toLowerCase(),
       jobTitle: job.jobTitle,
       description: job.description,
       tags: job.tags.split(','),

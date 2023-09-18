@@ -3,15 +3,13 @@ import Hero from './Hero'
 import CreateJob from './CreateJob'
 import JobListingCard from './JobListingCard'
 import JobBid from './JobBid'
-import JobListingOwnerActions from "./JobListingOwnerActions";
+import JobListingOwnerActions from './JobListingOwnerActions'
 import ApplicantsCard from './ApplicantsCard'
-import Payout from "./Payout";
-import UpdateJob from "./UpdateJob";
-import DeleteJob from "./DeleteJob";
+import Payout from './Payout'
+import UpdateJob from './UpdateJob'
+import DeleteJob from './DeleteJob'
 import Footer from './Footer'
-import ChatButton from './ChatButton'
 import MobileHeader from './MobileHeader'
-
 
 export {
   Header,
@@ -26,4 +24,4 @@ export {
   DeleteJob,
   JobBid,
   MobileHeader,
-};
+}
