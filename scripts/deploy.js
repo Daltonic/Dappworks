@@ -1,8 +1,6 @@
 const { ethers } = require('hardhat')
 const fs = require('fs')
 
-const toWei = (num) => ethers.utils.parseEther(num.toString())
-
 async function main() {
   const contract_name = 'DappWorks'
   const Contract = await ethers.getContractFactory(contract_name)

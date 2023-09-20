@@ -7,7 +7,7 @@ import {
   FaArrowRight,
 } from 'react-icons/fa'
 import { IoMdCheckmarkCircleOutline } from 'react-icons/io'
-import { useGlobalState, setGlobalState } from '../store'
+import { setGlobalState } from '../store'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAcceptedFreelancer } from '../services/blockchain'
 
@@ -18,8 +18,6 @@ const JobListingOwnerActions = ({ jobListing, editable }) => {
   useEffect(() => {
     getFreelancer()
   }, [])
-
-  const [freelancer] = useGlobalState('freelancer')
   const navigate = useNavigate()
 
   const openUpdateModal = () => {

@@ -82,7 +82,7 @@ const addJobListing = async ({ jobTitle, description, tags, prize }) => {
       })
       await tx.wait()
 
-      await getJobs()
+      await loadData()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -99,7 +99,7 @@ const updateJob = async ({ id, jobTitle, description, tags }) => {
       tx = await contract.updateJob(id, jobTitle, description, tags)
       await tx.wait()
 
-      await getMyJobs()
+      await loadData()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -116,7 +116,7 @@ const deleteJob = async (id) => {
       tx = await contract.deleteJob(id)
       await tx.wait()
 
-      await getMyJobs()
+      await loadData()
       resolve(tx)
     } catch (err) {
       reportError(err)
@@ -150,7 +150,7 @@ const acceptBid = async (id, jId, bidder) => {
       tx = await contract.acceptBid(id, jId, bidder)
       await tx.wait()
 
-      await getJobs()
+      await loadData()
       await getBidders(jId)
       resolve(tx)
     } catch (err) {
@@ -346,6 +346,7 @@ const structuredJobs = (jobs) =>
       timestamp: job.timestamp,
       listed: job.listed,
       disputed: job.disputed,
+      bidders: job.bidders.map((address) => address.toLowerCase()),
     }))
     .sort((a, b) => b.timestamp - a.timestamp)
 

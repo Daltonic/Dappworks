@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { Header, Hero, CreateJob } from '../components'
 

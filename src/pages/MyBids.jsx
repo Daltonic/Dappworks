@@ -1,18 +1,9 @@
-import React, { useEffect } from 'react'
-import { ChatAuth, Header, JobBid } from '../components'
-import { getMyBidJobs } from '../services/blockchain'
+import React from 'react'
+import { Header, JobBid } from '../components'
 import { useGlobalState } from '../store'
 
 const MyBids = () => {
   const [mybidjobs] = useGlobalState('mybidjobs')
-
-  const fetchData = async () => {
-    await getMyBidJobs()
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
 
   return (
     <div className="">

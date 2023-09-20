@@ -23,6 +23,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         uint timestamp;
         bool listed;
         bool disputed;
+        address[] bidders;
     }
 
     struct FreelancerStruct {
@@ -119,6 +120,7 @@ contract DappWorks is Ownable, ReentrancyGuard {
         bid.account = msg.sender;
         hasPlacedBid[id][msg.sender] = true;
 
+        jobListings[id].bidders.push(msg.sender);
         jobBidders[id].push(bid);
     }
 

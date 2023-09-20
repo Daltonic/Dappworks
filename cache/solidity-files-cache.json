@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/daltonic/Sites/dappWorks/src/contracts/DappWorks.sol": {
-      "lastModificationDate": 1695041418330,
-      "contentHash": "035bd5474287b9e99651d827d384d4ac",
+      "lastModificationDate": 1695210589747,
+      "contentHash": "edd3f8e6ab9639e4f5168fdaec2d21fa",
       "sourceName": "src/contracts/DappWorks.sol",
       "solcConfig": {
         "version": "0.8.11",
